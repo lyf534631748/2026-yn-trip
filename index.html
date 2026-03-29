@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>云南14日深度游 🏔️</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --primary: #e67e22;
+  --primary-light: #fef3e2;
+  --text: #2c3e50;
+  --text-light: #7f8c8d;
+  --border: #e8e4dd;
+  --tag-bg: #e8f4f8;
+  --tag-text: #2980b9;
+  --warning: #e74c3c;
+  --success: #27ae60;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #e67e22, #f39c12);
+  color: white;
+  padding: 20px 16px 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+.header h1 { font-size: 20px; font-weight: 700; }
+.header .subtitle { font-size: 13px; opacity: 0.9; margin-top: 2px; }
+
+/* Day tabs - horizontal scroll */
+.tab-bar {
+  display: flex;
+  overflow-x: auto;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 68px;
+  z-index: 99;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light);
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.2s;
+}
+.tab-btn.active {
+  color: var(--primary);
+  font-weight: 700;
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+}
+.tab-btn .day-num { display: block; font-size: 11px; opacity: 0.7; }
+.tab-btn.is-today {
+  color: var(--primary);
+}
+.tab-btn.is-today::before {
+  content: '📍';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+}
+
+/* Content area */
+.content {
+  padding: 12px 12px 80px;
+  display: none;
+}
+.content.active { display: block; }
+
+/* Day header */
+.day-header {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.day-header .date-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.day-header .day-tag {
+  background: var(--primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.day-header .date-text {
+  font-size: 15px;
+  font-weight: 600;
+}
+.day-header .theme {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+.day-header .city-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--tag-text);
+  background: var(--tag-bg);
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+  border-radius: 1px;
+}
+
+/* Event card */
+.event {
+  position: relative;
+  margin-bottom: 10px;
+}
+.event::before {
+  content: '';
+  position: absolute;
+  left: -21px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  z-index: 1;
+}
+.event.past::before {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.event-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.event-card .time {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.event-card .title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.event-card .desc {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* Location link */
+.loc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--tag-text);
+  font-size: 13px;
+  text-decoration: none;
+  padding: 4px 10px;
+  background: var(--tag-bg);
+  border-radius: 20px;
+  margin-top: 6px;
+  margin-right: 4px;
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.loc-link:hover { background: #d0eaf5; }
+.loc-link:active { background: #b8dff0; }
+.loc-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.tag-food { background: #fef3e2; color: #e67e22; }
+.tag-ticket { background: #e8f4f8; color: #2980b9; }
+.tag-tip { background: #fde8e8; color: #e74c3c; }
+.tag-hotel { background: #e8f8f0; color: #27ae60; }
+.tag-drive { background: #f0e8f8; color: #8e44ad; }
+.tag-rain { background: #e8eaf8; color: #5b6abf; }
+
+/* Note box */
+.note {
+  background: #fff8e1;
+  border-left: 3px solid #ffc107;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.note.warn {
+  background: #fde8e8;
+  border-left-color: #e74c3c;
+}
+
+/* Budget bar */
+.budget-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-top: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  font-size: 13px;
+}
+.budget-bar .label { color: var(--text-light); }
+.budget-bar .amount { font-weight: 700; color: var(--primary); font-size: 16px; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Responsive */
+@media (min-width: 600px) {
+  body { max-width: 480px; margin: 0 auto; box-shadow: 0 0 20px rgba(0,0,0,0.08); min-height: 100vh; }
+  .tab-btn { padding: 10px 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🏔️ 云南14日深度游</h1>
+  <div class="subtitle">2026.5.4 - 5.18 · 武汉→丽江→泸沽湖→香格里拉→大理→昆明</div>
+</div>
+
+<div class="tab-bar" id="tabBar"></div>
+<div id="contentArea"></div>
+
+<div class="footer">
+  云南14日深度游攻略 · 修订版<br>
+  <span style="font-size:11px;opacity:0.7">点击地点可跳转高德地图 🗺️</span>
+</div>
+
+<script>
+const days = [
+  {
+    day: 1, date: '5月4日', weekday: '周一', theme: '武汉→丽江·古城初印象',
+    city: '丽江', alt: '2400m',
+    events: [
+      { time: '08:00-10:30', title: '✈️ 武汉天河→丽江三义', desc: '选择早班机', locs: [{ name: '丽江三义机场', lat: 26.5583, lng: 100.2658 }] },
+      { time: '10:30-11:30', title: '打车前往丽江古城', desc: '约40分钟，约50元', locs: [{ name: '丽江古城', lat: 26.8721, lng: 100.2256 }] },
+      { time: '11:30-12:00', title: '🏨 办理入住', desc: '古城南门区域，休息适应海拔', tags: ['hotel'] },
+      { time: '12:00-13:00', title: '🍜 午餐', desc: '推荐：有一锅·腊排骨火锅（人均100-120元）/ 滇厨·小锅巴纳西餐厅（人均80-100元）', tags: ['food'] },
+      { time: '14:00-17:00', title: '🚶 丽江古城漫步', desc: '大水车→四方街→七一街→五一街→木府（40元）→狮子山万古楼（35元）', locs: [{ name: '大水车', lat: 26.8727, lng: 100.2270 }, { name: '木府', lat: 26.8686, lng: 100.2260 }, { name: '万古楼', lat: 26.8683, lng: 100.2234 }], tags: ['ticket'] },
+      { time: '18:00-20:00', title: '🍜 晚餐', desc: '云雪丽·野生菌火锅 / 阿妈意·纳西美食', tags: ['food'] },
+      { time: '20:00-22:00', title: '🌙 古城夜游', desc: '酒吧街听民谣 · 推荐：一米阳光、火塘酒吧', locs: [{ name: '丽江古城酒吧街', lat: 26.8705, lng: 100.2255 }] }
+    ],
+    budget: '约2000-2400元',
+    notes: ['第一天到高原（2400m），动作放慢，多喝水，不要剧烈运动']
+  },
+  {
+    day: 2, date: '5月5日', weekday: '周二', theme: '束河+白沙+玉湖村（海拔适应日）',
+    city: '丽江', alt: '2400m',
+    events: [
+      { time: '09:00-09:30', title: '🚗 前往束河古镇', desc: '打车约15元，20分钟', locs: [{ name: '束河古镇', lat: 26.9107, lng: 100.2129 }] },
+      { time: '09:30-12:00', title: '🏘️ 束河古镇游览', desc: '九鼎龙潭·青龙桥·四方街·比大研更安静惬意', locs: [{ name: '九鼎龙潭', lat: 26.9135, lng: 100.2098 }, { name: '束河四方街', lat: 26.9105, lng: 100.2125 }] },
+      { time: '12:00-13:00', title: '🍜 午餐', desc: '小锅饭（云南家常菜，人均60-80元）', tags: ['food'] },
+      { time: '14:00-16:30', title: '🏘️ 白沙古镇', desc: '白沙壁画（30元）·纳西刺绣体验·丽江最古老集镇', locs: [{ name: '白沙古镇', lat: 26.9330, lng: 100.1963 }, { name: '白沙壁画', lat: 26.9325, lng: 100.1955 }], tags: ['ticket'] },
+      { time: '16:30-18:30', title: '🏡 玉湖村漫步+日落', desc: '石头房村落·洛克故居·玉龙雪山最佳倒影拍摄点', locs: [{ name: '玉湖村', lat: 26.9520, lng: 100.1880 }] },
+      { time: '19:00-20:00', title: '🍜 晚餐', desc: '滇西王子·美食朝圣店（人均100-130元）', tags: ['food'] }
+    ],
+    budget: '约800-1000元',
+    notes: ['💡 今晚准备明天雪山：提前1小时服红景天，检查氧气瓶，打包干粮，充电宝充满']
+  },
+  {
+    day: 3, date: '5月6日', weekday: '周三', theme: '玉龙雪山一日游',
+    city: '丽江', alt: '2400→4680m',
+    events: [
+      { time: '06:30-07:00', title: '⏰ 早起准备', desc: '打包早餐，出发前1小时服用红景天' },
+      { time: '07:00-08:00', title: '🚗 前往玉龙雪山', desc: '打车约60元，40分钟', locs: [{ name: '玉龙雪山甘海子游客中心', lat: 27.1040, lng: 100.1790 }] },
+      { time: '08:00-09:00', title: '🚠 乘环保车至索道站', desc: '甘海子→大索道下站' },
+      { time: '09:00-10:30', title: '🏔️ 大索道登顶冰川公园', desc: '海拔4680米！缓慢行走，吸氧，感觉不适立即下撤', locs: [{ name: '冰川公园', lat: 27.1070, lng: 100.1730 }], tags: ['ticket'] },
+      { time: '10:30-11:30', title: '⬇️ 下山前往蓝月谷' },
+      { time: '11:30-13:00', title: '💎 蓝月谷游览', desc: '玉液湖→镜潭湖→蓝月湖→听涛湖·蓝绿色湖水超美', locs: [{ name: '蓝月谷', lat: 27.0920, lng: 100.1710 }] },
+      { time: '13:00-14:00', title: '🍜 景区简餐', desc: '自带干粮或景区餐厅（人均50-80元）', tags: ['food'] },
+      { time: '15:00-16:00', title: '⬇️ 返回丽江古城' },
+      { time: '18:00-20:00', title: '🍜 晚餐+放松', desc: '有一锅·黑山羊腊排骨火锅 + 古城足浴', tags: ['food'] }
+    ],
+    budget: '约1200-1500元',
+    notes: ['⚠️ 登山注意：穿羽绒服/冲锋衣（景区租50元），带2-3瓶氧气，不要剧烈运动', '🎫 大索道180元/人，提前7天（4月29日20:00）在"丽江旅游集团"小程序抢票', '🌧️ 雨天备选：白沙古镇深度游 / 丽江千古情演出（280元）'],
+    rainNote: { title: '🌧️ 雨天备选', items: ['白沙古镇+纳西刺绣体验', '丽江千古情演出（约280元）', '黑龙潭公园+纳西文化博物馆'] }
+  },
+  {
+    day: 4, date: '5月7日', weekday: '周四', theme: '丽江→泸沽湖·自驾东方女儿国',
+    city: '丽江→泸沽湖', alt: '2400→2690m',
+    events: [
+      { time: '07:00-08:00', title: '🏨 退房+取车', desc: '丽江三义机场/约定地点取车（第一段租车开始）', tags: ['drive'] },
+      { time: '08:00-12:30', title: '🚗 丽江→泸沽湖', desc: '200公里，约4小时，全程盘山路，谨慎驾驶', locs: [{ name: '泸沽湖', lat: 27.7000, lng: 100.7800 }], tags: ['drive'] },
+      { time: '12:30-13:00', title: '🏨 入住泸沽湖', desc: '大落水村/里格半岛湖景房', tags: ['hotel'] },
+      { time: '13:00-14:00', title: '🍜 午餐', desc: '扎西家藏餐吧（人均60-80元）/ 女儿国餐厅（人均70-90元）', locs: [{ name: '大落水村', lat: 27.6980, lng: 100.7820 }], tags: ['food'] },
+      { time: '14:30-17:30', title: '🚗 泸沽湖半环湖', desc: '里格半岛→尼赛村→小洛水村→草海→走婚桥', locs: [{ name: '里格半岛', lat: 27.7140, lng: 100.7680 }, { name: '走婚桥', lat: 27.6850, lng: 100.7650 }, { name: '草海', lat: 27.6800, lng: 100.7700 }] },
+      { time: '17:30-18:00', title: '🌅 草海日落', desc: '最佳日落观景点', locs: [{ name: '草海日落观景点', lat: 27.6780, lng: 100.7680 }] },
+      { time: '18:00-19:30', title: '🍜 晚餐', desc: '朋来聚/摩梭人餐厅（人均80-100元）', tags: ['food'] },
+      { time: '19:30-21:00', title: '🔥 摩梭篝火晚会', desc: '可选，门票约30元' },
+      { time: '21:00-', title: '⭐ 看星空', desc: '泸沽湖观星绝佳！几乎无光污染' }
+    ],
+    budget: '约1090元',
+    notes: ['⚠️ 盘山路弯道多，注意对向来车，5月可能遇阵雨路面湿滑', '🎫 泸沽湖门票70元/人', '🏨 强烈建议住湖景房，体验完全不同']
+  },
+  {
+    day: 5, date: '5月8日', weekday: '周五', theme: '泸沽湖·深度环湖+摩梭文化',
+    city: '泸沽湖', alt: '2690m',
+    events: [
+      { time: '06:00-07:00', title: '🌅 里格半岛日出', desc: '最佳日出观赏点！提前15分钟到观景台占位', locs: [{ name: '里格半岛观景台', lat: 27.7155, lng: 100.7670 }] },
+      { time: '07:00-08:00', title: '🍜 早餐' },
+      { time: '08:00-10:00', title: '🛶 猪槽船游湖', desc: '摩梭特色体验，约50-100元/人，1-1.5小时' },
+      { time: '10:00-12:00', title: '📸 北线环湖', desc: '女神湾、王妃岛等小众景点', locs: [{ name: '女神湾', lat: 27.7200, lng: 100.7550 }, { name: '王妃岛', lat: 27.7050, lng: 100.7850 }] },
+      { time: '12:00-13:00', title: '🍜 午餐', desc: '里格岛农家菜（人均60-80元）', tags: ['food'] },
+      { time: '14:00-15:30', title: '🚗 洛洼码头', desc: '可选乘船游览', locs: [{ name: '洛洼码头', lat: 27.6900, lng: 100.8000 }] },
+      { time: '15:30-17:00', title: '🚶 走婚桥+草海漫步', desc: '补拍不同角度' },
+      { time: '18:00-19:30', title: '🍜 晚餐', tags: ['food'] },
+      { time: '21:00-', title: '⭐ 最后一晚星空', desc: '明天要早起赶路，早点休息' }
+    ],
+    budget: '约900-1000元',
+    notes: ['💡 摩梭家访可选（约80元/人），了解母系氏族文化和走婚习俗']
+  },
+  {
+    day: 6, date: '5月9日', weekday: '周六', theme: '泸沽湖→丽江（还车）→高铁赴香格里拉',
+    city: '泸沽湖→丽江→香格里拉', alt: '2690→2400→3280m',
+    events: [
+      { time: '07:00-08:00', title: '🏨 早餐+退房' },
+      { time: '08:00-11:30', title: '🚗 泸沽湖→丽江自驾', desc: '190公里，约3.3小时', locs: [{ name: '丽江', lat: 26.8721, lng: 100.2256 }], tags: ['drive'] },
+      { time: '11:30-12:30', title: '🚗 丽江还车', desc: '预留30-40分钟办理手续（第一段租车结束）', tags: ['drive'] },
+      { time: '12:30-13:30', title: '🍜 丽江午餐', desc: '古城简餐，人均50-70元', tags: ['food'] },
+      { time: '13:30-13:40', title: '🚕 前往丽江站' },
+      { time: '13:50-15:00', title: '🚄 高铁赴香格里拉', desc: 'C87次，二等座70元/人，历时1小时10分', locs: [{ name: '香格里拉站', lat: 28.0080, lng: 99.7100 }] },
+      { time: '15:00-15:30', title: '🚕 打车前往酒店' },
+      { time: '15:30-17:30', title: '🏨 入住休息', desc: '独克宗古城供氧房，适应海拔3280m', locs: [{ name: '独克宗古城', lat: 28.0040, lng: 99.7060 }], tags: ['hotel'] },
+      { time: '18:00-20:00', title: '🍜 晚餐', desc: '宏宏无烟石板烧烤 / 宗喀藏餐（人均80-120元）', tags: ['food'] },
+      { time: '20:00-21:00', title: '🌙 独克宗古城漫步', desc: '世界最大转经筒，慢慢走不要急', locs: [{ name: '龟山公园大转经筒', lat: 28.0035, lng: 99.7045 }] }
+    ],
+    budget: '约800-900元',
+    notes: ['⚠️ 海拔从2400m跳到3280m，可能轻微头痛气短，到酒店先休息', '⚠️ 第一天到香格里拉不要洗澡，容易加重高反']
+  },
+  {
+    day: 7, date: '5月10日', weekday: '周日', theme: '松赞林寺+纳帕海',
+    city: '香格里拉', alt: '3280m',
+    events: [
+      { time: '08:00-08:30', title: '🍜 早餐' },
+      { time: '08:30-09:00', title: '🚕 前往松赞林寺' },
+      { time: '09:00-11:30', title: '🏛️ 松赞林寺', desc: '"小布达拉宫"·云南最大藏传佛教寺院·门票115元（含观光车）', locs: [{ name: '噶丹·松赞林寺', lat: 27.9270, lng: 99.7400 }], tags: ['ticket'] },
+      { time: '11:30-12:00', title: '📸 对面山坡拍全景', desc: '松赞林寺最佳全景机位' },
+      { time: '12:00-13:30', title: '🍜 午餐', desc: '在水一方牦牛肉火锅（人均100-120元）/ 五彩雪域藏餐馆（人均80-100元）', tags: ['food'] },
+      { time: '14:00-17:00', title: '🐎 纳帕海草原', desc: '环湖约40公里·骑马约100元/小时·依拉草原拍照', locs: [{ name: '纳帕海', lat: 27.9600, lng: 99.6500 }, { name: '依拉草原', lat: 27.9550, lng: 99.6450 }] },
+      { time: '18:00-20:00', title: '🍜 晚餐', desc: '牛牛藏餐吧 / 静静的嘛呢石藏餐（人均80-110元）', tags: ['food'] }
+    ],
+    budget: '约1100-1300元',
+    notes: ['💡 建议包车游纳帕海（约200-300元/车），比打车方便'],
+    rainNote: { title: '🌧️ 雨天备选', items: ['香格里拉藏人博物馆（免费）', '唐卡画院体验（约150元/人）', '独克宗古城深度逛'] }
+  },
+  {
+    day: 8, date: '5月11日', weekday: '周一', theme: '巴拉格宗一日游',
+    city: '香格里拉', alt: '2000-3280m',
+    events: [
+      { time: '07:30-08:30', title: '🍜 早餐' },
+      { time: '08:30-09:30', title: '🚗 包车前往巴拉格宗', desc: '50公里，约1小时，包车往返约300-400元' },
+      { time: '09:30-12:00', title: '🏔️ 巴拉格宗景区（上午）', desc: '香格里拉大峡谷（深达2000米）·格宗神山（5500m）', locs: [{ name: '巴拉格宗景区', lat: 28.2000, lng: 99.5500 }], tags: ['ticket'] },
+      { time: '12:00-13:00', title: '🍜 景区简餐', desc: '人均50-70元', tags: ['food'] },
+      { time: '13:00-16:00', title: '🏘️ 巴拉格宗景区（下午）', desc: '巴拉村（千年藏族古村落）·通天峡（一线天）' },
+      { time: '16:00-17:00', title: '🚗 返回香格里拉' },
+      { time: '18:00-20:00', title: '🍜 晚餐', tags: ['food'] }
+    ],
+    budget: '约900-1100元',
+    notes: ['💡 巴拉格宗海拔比香格里拉市区低，身体会更舒适', '🎫 门票约170元（含观光车）']
+  },
+  {
+    day: 9, date: '5月12日', weekday: '周二', theme: '普达措国家公园',
+    city: '香格里拉', alt: '3280→4100m',
+    events: [
+      { time: '07:30-08:30', title: '🍜 早餐' },
+      { time: '08:30-09:00', title: '🚕 前往普达措', desc: '25公里，约30分钟' },
+      { time: '09:00-12:00', title: '🌲 属都湖', desc: '3.3公里木栈道，步行约2小时·高原湖泊原始森林', locs: [{ name: '普达措国家公园', lat: 27.9330, lng: 99.9600 }, { name: '属都湖', lat: 27.9300, lng: 99.9550 }], tags: ['ticket'] },
+      { time: '12:00-13:00', title: '🍜 午餐', desc: '景区简餐或自带干粮', tags: ['food'] },
+      { time: '14:00-16:30', title: '💎 碧塔海', desc: '海拔3538米·更原始·可乘船（50元）·5月杜鹃花盛开', locs: [{ name: '碧塔海', lat: 27.9100, lng: 99.9800 }] },
+      { time: '16:30-17:30', title: '🚕 返回香格里拉' },
+      { time: '18:00-20:00', title: '🍜 晚餐', desc: '可选藏民家访+晚餐（人均150-200元）', tags: ['food'] }
+    ],
+    budget: '约1200-1400元',
+    notes: ['🎫 普达措门票258元（含观光车）', '⚠️ 海拔3500-4100米，注意高反', '🎒 明天出发大理，今晚整理行李'],
+    rainNote: { title: '🌧️ 雨天备选', items: ['松赞林卡下午茶（约150元/人）', '独克宗古城+藏香制作/唐卡体验'] }
+  },
+  {
+    day: 10, date: '5月13日', weekday: '周三', theme: '香格里拉→大理',
+    city: '香格里拉→大理', alt: '3280→1972m',
+    events: [
+      { time: '07:30-08:30', title: '🏨 早餐+退房' },
+      { time: '09:35-13:01', title: '🚄 高铁赴大理', desc: 'C988次，历时3小时26分，二等座129元/人', locs: [{ name: '大理站', lat: 25.5900, lng: 100.2300 }] },
+      { time: '13:00-13:30', title: '🚕 打车前往酒店', desc: '住古城周边' },
+      { time: '13:30-14:00', title: '🏨 入住', tags: ['hotel'] },
+      { time: '14:00-15:00', title: '🍜 午餐', desc: '段公子·白族特色菜（人均80-100元）', tags: ['food'] },
+      { time: '15:00-18:00', title: '🚶 大理古城闲逛', desc: '人民路·复兴路·五华楼·洋人街', locs: [{ name: '大理古城', lat: 25.6065, lng: 100.2670 }, { name: '五华楼', lat: 25.6045, lng: 100.2670 }] },
+      { time: '18:00-18:30', title: '🚗 取车', desc: '第二段租车开始（大理取车）', tags: ['drive'] },
+      { time: '18:30-20:00', title: '🍜 晚餐', desc: '梅子箐餐厅/翠田（人均80-120元）', tags: ['food'] },
+      { time: '20:00-21:30', title: '🌙 古城夜游', desc: '人民路听街头音乐' }
+    ],
+    budget: '约800-1000元',
+    notes: ['🎉 到大理海拔降至1972m，身体会明显轻松！', '💡 下午取车，明天自驾环洱海']
+  },
+  {
+    day: 11, date: '5月14日', weekday: '周四', theme: '洱海环湖·喜洲+双廊',
+    city: '大理', alt: '1972m',
+    events: [
+      { time: '08:00-09:30', title: '🚗 前往喜洲古镇', desc: '沿环海西路，约20公里30分钟', locs: [{ name: '喜洲古镇', lat: 25.6450, lng: 100.2050 }] },
+      { time: '09:30-11:30', title: '🏘️ 喜洲古镇', desc: '严家大院（20元）·转角楼·喜洲粑粑必吃！·早市08:00-10:00最热闹', locs: [{ name: '严家大院', lat: 25.6445, lng: 100.2040 }, { name: '喜洲转角楼', lat: 25.6438, lng: 100.2060 }], tags: ['ticket', 'food'] },
+      { time: '11:30-12:30', title: '🍜 午餐', desc: '喜洲杨记耙耙·凉鸡米线（人均30-50元）', tags: ['food'] },
+      { time: '12:30-13:30', title: '📸 海舌公园', desc: '拍照打卡（注意：有时因水位关闭）', locs: [{ name: '海舌公园', lat: 25.6570, lng: 100.1880 }] },
+      { time: '14:00-14:30', title: '🚗 沿环海东路前往双廊', desc: '一路海景，美不胜收' },
+      { time: '14:30-17:30', title: '🏘️ 双廊古镇', desc: '南诏风情岛（50元+船票20元）·玉几岛·海街咖啡馆', locs: [{ name: '双廊古镇', lat: 25.6800, lng: 100.1800 }, { name: '南诏风情岛', lat: 25.6780, lng: 100.1830 }] },
+      { time: '17:30-18:30', title: '🌅 双廊看日落', desc: '海街尽头是最佳日落观景点' },
+      { time: '18:30-20:00', title: '🍜 双廊晚餐', desc: '云禾壹海景庄园餐厅（人均150-180元）', tags: ['food'] },
+      { time: '20:00-21:00', title: '🚗 返回大理古城' }
+    ],
+    budget: '约1000-1200元',
+    notes: ['🚗 今天全程自驾环洱海，环海东路风景最美，多停几次拍照']
+  },
+  {
+    day: 12, date: '5月15日', weekday: '周五', theme: '大理→沙溪古镇（住沙溪）',
+    city: '大理→沙溪', alt: '1972m',
+    events: [
+      { time: '08:00-09:00', title: '🏨 退房（行李放车上）' },
+      { time: '09:00-11:00', title: '🚗 大理→沙溪', desc: '约120公里，山路，约2小时', locs: [{ name: '沙溪古镇', lat: 26.3670, lng: 99.8420 }], tags: ['drive'] },
+      { time: '11:00-12:00', title: '🏨 入住沙溪客栈', desc: '选有院子的老宅客栈，150-300元/晚', tags: ['hotel'] },
+      { time: '12:00-13:00', title: '🍜 午餐', desc: '宇晨咖啡（人均60-80元）/ 当地农家菜（人均50-70元）', tags: ['food'] },
+      { time: '13:00-15:00', title: '🏘️ 沙溪古镇深度游', desc: '四方街·古戏台·老马店·兴教寺（明代古寺）', locs: [{ name: '沙溪四方街', lat: 26.3668, lng: 99.8415 }, { name: '兴教寺', lat: 26.3675, lng: 99.8410 }, { name: '古戏台', lat: 26.3670, lng: 99.8418 }] },
+      { time: '15:00-16:30', title: '🌉 玉津桥+田野漫步', desc: '百年古桥·黑惠江上·日落金光绝美', locs: [{ name: '玉津桥', lat: 26.3650, lng: 99.8390 }] },
+      { time: '16:30-18:00', title: '☕ 咖啡馆发呆', desc: '这才是沙溪的正确打开方式' },
+      { time: '18:00-19:30', title: '🍜 沙溪晚餐', desc: '当地白族菜（人均50-70元）', tags: ['food'] },
+      { time: '19:30-21:00', title: '🌙 沙溪夜景', desc: '四方街暖灯·星空·几乎没有光污染·沙溪最迷人的时刻' }
+    ],
+    budget: '约700-900元',
+    notes: ['✨ 沙溪为什么住一晚：傍晚6点后游客散去，只剩本地人。温暖的灯光、满天星星，这才是沙溪的精华']
+  },
+  {
+    day: 13, date: '5月16日', weekday: '周六', theme: '沙溪清晨→大理·苍山+周城扎染',
+    city: '沙溪→大理', alt: '1972m',
+    events: [
+      { time: '06:30-07:30', title: '🌅 沙溪清晨', desc: '四方街晨雾·玉津桥日出·摄影黄金时段', locs: [{ name: '玉津桥', lat: 26.3650, lng: 99.8390 }] },
+      { time: '07:30-08:30', title: '🍜 客栈早餐' },
+      { time: '08:30-10:30', title: '🚗 沙溪→大理', desc: '约2小时', tags: ['drive'] },
+      { time: '10:30-11:00', title: '🚕 前往苍山感通索道' },
+      { time: '11:00-13:00', title: '🏔️ 苍山游览', desc: '感通索道往返120元·玉带云游路·俯瞰洱海', locs: [{ name: '苍山感通索道', lat: 25.5980, lng: 100.2350 }], tags: ['ticket'] },
+      { time: '13:00-14:00', title: '🍜 午餐', desc: '梅子箐餐厅 / 寂照庵斋饭（20元/人，11:30-12:30供应）', locs: [{ name: '寂照庵', lat: 25.6020, lng: 100.2300 }], tags: ['food'] },
+      { time: '14:00-14:30', title: '🚗 前往周城', desc: '25公里，约30分钟' },
+      { time: '14:30-17:30', title: '🎨 周城扎染体验', desc: '中国扎染之乡·约80-150元/人·成品可带走·推荐：段氏染坊/璞真扎染', locs: [{ name: '周城', lat: 25.6450, lng: 100.1500 }, { name: '璞真扎染', lat: 25.6440, lng: 100.1480 }] },
+      { time: '18:00-20:00', title: '🍜 告别晚餐', desc: '滇孃孃·云南创意菜（人均100-130元）', tags: ['food'] },
+      { time: '20:00-21:30', title: '🛍️ 买伴手礼', desc: '古城最后一晚，鲜花饼·乳扇·普洱茶' }
+    ],
+    budget: '约1100-1300元',
+    notes: ['💡 寂照庵被称为"中国最美尼姑庵"，多肉植物天堂，免费参观']
+  },
+  {
+    day: 14, date: '5月17日', weekday: '周日', theme: '大理→昆明',
+    city: '大理→昆明', alt: '1972→1891m',
+    events: [
+      { time: '07:00-08:00', title: '🏨 早餐+退房' },
+      { time: '08:00-10:00', title: '🏛️ 崇圣寺三塔', desc: '大理地标·门票75元·三塔倒影池拍照最佳', locs: [{ name: '崇圣寺三塔', lat: 25.6200, lng: 100.2600 }], tags: ['ticket'] },
+      { time: '10:00-10:30', title: '🛍️ 最后的伴手礼' },
+      { time: '10:30-11:30', title: '🚗 还车+前往大理站', desc: '第二段租车结束', tags: ['drive'] },
+      { time: '12:30-14:30', title: '🚄 高铁赴昆明', desc: '约2小时，二等座145元/人', locs: [{ name: '昆明南站', lat: 24.8900, lng: 102.8000 }] },
+      { time: '14:30-15:30', title: '🏨 入住酒店', desc: '翠湖/南屏街区域', tags: ['hotel'] },
+      { time: '15:30-18:00', title: '🚶 昆明闲逛', desc: '翠湖公园·云南大学老校区·银杏大道', locs: [{ name: '翠湖公园', lat: 25.0440, lng: 102.7060 }, { name: '云南大学', lat: 25.0460, lng: 102.7040 }] },
+      { time: '18:00-20:00', title: '🍜 晚餐', desc: '建新园过桥米线 / 福照楼汽锅鸡（人均60-100元）', tags: ['food'] },
+      { time: '20:00-22:00', title: '🌙 南屏街·金马碧鸡坊', desc: '昆明最热闹的夜生活区', locs: [{ name: '金马碧鸡坊', lat: 25.0290, lng: 102.7100 }] }
+    ],
+    budget: '约1000-1200元',
+    notes: ['🎒 今晚整理行李，明天返程']
+  },
+  {
+    day: 15, date: '5月18日', weekday: '周一', theme: '昆明→武汉·返程',
+    city: '昆明→武汉', alt: '1891m',
+    events: [
+      { time: '07:00-08:00', title: '🍜 最后一顿云南早餐' },
+      { time: '08:00-09:00', title: '🚕 前往昆明长水机场', desc: '约40分钟', locs: [{ name: '昆明长水国际机场', lat: 25.1020, lng: 102.9290 }] },
+      { time: '10:00-12:00', title: '✈️ 昆明→武汉', desc: '飞行约2小时' },
+      { time: '12:00', title: '🏠 到家！行程结束', desc: '🎉 云南14日深度游圆满结束！' }
+    ],
+    budget: '约1500-2000元',
+    notes: ['🎊 恭喜完成14天云南之旅！好好休息~']
+  }
+];
+
+// Tag labels
+const tagMap = {
+  food: { text: '🍜 美食', cls: 'tag-food' },
+  ticket: { text: '🎫 门票', cls: 'tag-ticket' },
+  tip: { text: '💡 提示', cls: 'tag-tip' },
+  hotel: { text: '🏨 住宿', cls: 'tag-hotel' },
+  drive: { text: '🚗 自驾', cls: 'tag-drive' },
+  rain: { text: '🌧️ 雨天', cls: 'tag-rain' }
+};
+
+// Amap link
+function amapLink(name, lat, lng) {
+  return `https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`;
+}
+
+// Check if mobile
+function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+// Build tabs
+function buildTabs() {
+  const bar = document.getElementById('tabBar');
+  days.forEach(d => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn';
+    btn.dataset.day = d.day;
+    btn.innerHTML = `D${d.day}`;
+    btn.title = `${d.date} ${d.theme}`;
+    btn.onclick = () => switchTab(d.day);
+    bar.appendChild(btn);
+  });
+}
+
+// Build content
+function buildContent() {
+  const area = document.getElementById('contentArea');
+  days.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'content';
+    div.id = `day-${d.day}`;
+
+    let html = `
+      <div class="day-header">
+        <div class="date-row">
+          <span class="day-tag">Day ${d.day}</span>
+          <span class="date-text">${d.date}（${d.weekday}）</span>
+        </div>
+        <div class="theme">${d.theme}</div>
+        <span class="city-row">📍 ${d.city} · 海拔 ${d.alt}</span>
+      </div>
+      <div class="timeline">
+    `;
+
+    d.events.forEach(ev => {
+      html += `<div class="event"><div class="event-card">`;
+      html += `<div class="time">${ev.time}</div>`;
+      html += `<div class="title">${ev.title}</div>`;
+      if (ev.desc) html += `<div class="desc">${ev.desc}</div>`;
+
+      // Location links
+      if (ev.locs) {
+        ev.locs.forEach(loc => {
+          const link = amapLink(loc.name, loc.lat, loc.lng);
+          html += `<a class="loc-link" href="${link}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            ${loc.name}
+          </a>`;
+        });
+      }
+
+      // Tags
+      if (ev.tags) {
+        html += '<div class="tags">';
+        ev.tags.forEach(t => {
+          if (tagMap[t]) html += `<span class="tag ${tagMap[t].cls}">${tagMap[t].text}</span>`;
+        });
+        html += '</div>';
+      }
+
+      html += `</div></div>`;
+    });
+
+    html += '</div>';
+
+    // Notes
+    if (d.notes && d.notes.length) {
+      d.notes.forEach(n => {
+        const isWarn = n.startsWith('⚠️');
+        html += `<div class="note ${isWarn ? 'warn' : ''}">${n}</div>`;
+      });
+    }
+
+    // Rain note
+    if (d.rainNote) {
+      html += `<div class="note" style="background:#e8eaf8;border-left-color:#5b6abf">
+        <strong>${d.rainNote.title}</strong>
+        <ul style="margin:4px 0 0 16px;font-size:12px;color:#5b6abf">${d.rainNote.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      </div>`;
+    }
+
+    // Budget
+    html += `<div class="budget-bar">
+      <span class="label">💰 今日预算（2人）</span>
+      <span class="amount">${d.budget}</span>
+    </div>`;
+
+    div.innerHTML = html;
+    area.appendChild(div);
+  });
+}
+
+// Switch tab
+function switchTab(day) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.tab-btn[data-day="${day}"]`).classList.add('active');
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`day-${day}`).classList.add('active');
+
+  // Scroll tab into view
+  const btn = document.querySelector(`.tab-btn[data-day="${day}"]`);
+  btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+// Auto-select today's tab
+function autoSelect() {
+  const now = new Date();
+  // Trip dates: 2026-05-04 to 2026-05-18
+  const tripStart = new Date(2026, 4, 4); // May 4
+  const tripEnd = new Date(2026, 4, 18);  // May 18
+
+  let day = 1;
+  if (now >= tripStart && now <= tripEnd) {
+    day = Math.floor((now - tripStart) / 86400000) + 1;
+    day = Math.min(day, 15);
+  }
+  switchTab(day);
+}
+
+// Init
+buildTabs();
+buildContent();
+autoSelect();
+
+// PWA-like: prevent pull-to-refresh on mobile
+document.body.addEventListener('touchmove', function(e) {}, { passive: true });
+</script>
+</body>
+</html>
