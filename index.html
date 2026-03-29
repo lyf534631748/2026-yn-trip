@@ -8,8 +8,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0a0a0b;--card:#16161a;--border:#2a2a32;--text:#e8e8ec;--text2:#8888a0;--accent:#ff6b35;--tag-bg:rgba(255,107,53,.12);--loc-bg:rgba(56,189,248,.1);--loc-text:#38bdf8;--warn:#fbbf24;--rain:#818cf8}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:56px}
-
-/* Header */
 .hd{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;background:rgba(10,10,11,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .hd-left{display:flex;align-items:center;gap:10px}
 .hd h1{font-size:16px;font-weight:700;letter-spacing:.3px}
@@ -19,8 +17,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .hbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .hbtn:active{background:var(--border)}
 .hbtn.act{border-color:var(--accent);color:var(--accent)}
-
-/* Overlay + Menu */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
 .ov.on{opacity:1;pointer-events:auto}
 .menu{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--card);z-index:201;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding-bottom:60px;border-right:1px solid var(--border)}
@@ -33,15 +29,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .mi.act .mi-num{color:var(--accent)}
 .mi .mi-info{flex:1;min-width:0}
 .mi .mi-th{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.mi.act .mi-th{color:var(--accent2)}
-
-/* Content */
+.mi.act .mi-th{color:rgba(255,140,90,.9)}
 .ct{padding:10px 14px 80px;display:none}
 .ct.on{display:block}
 .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--tag-bg);font-size:11px;color:var(--accent);margin-bottom:10px;font-weight:600}
 .theme{font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4}
-
-/* Timeline */
 .tl{position:relative;padding-left:20px}
 .tl::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:var(--border)}
 .ev{position:relative;margin-bottom:8px}
@@ -59,18 +51,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .tg-k{background:rgba(56,189,248,.1);color:#38bdf8}
 .tg-h{background:rgba(52,211,153,.1);color:#34d399}
 .tg-d{background:rgba(168,85,247,.1);color:#a855f7}
-
-/* Note */
 .nt{background:rgba(251,191,36,.06);border-left:2px solid var(--warn);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--text2);line-height:1.5}
 .nt.w{background:rgba(239,68,68,.06);border-left-color:#ef4444}
 .nt.r{background:rgba(129,140,248,.06);border-left-color:var(--rain)}
-
-/* Budget */
 .bgb{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:10px}
 .bgb .lb{font-size:12px;color:var(--text2)}
 .bgb .am{font-size:15px;font-weight:700;color:var(--accent)}
-
-/* Booking */
 .bk-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
 .bk-item .bk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
 .bk-item .bk-name{font-size:14px;font-weight:700;flex:1}
@@ -81,64 +67,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .bk-when.hot{background:rgba(239,68,68,.08);color:#f87171}
 .bk-when.soon{background:rgba(251,191,36,.08);color:#fbbf24}
 .bk-when.easy{background:rgba(52,211,153,.08);color:#34d399}
-
-/* Packing list */
 .pk-sec{margin-bottom:16px}
 .pk-sec-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;padding-left:2px}
 .pk-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:4px;font-size:13px;-webkit-tap-highlight-color:transparent;cursor:pointer;user-select:none}
 .pk-row:active{background:var(--border)}
-.pk-row.done{opacity:.4;text-decoration:line-through}
-.pk-ck{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+.pk-row.done{opacity:.45}
+.pk-row.done .pk-name{text-decoration:line-through}
+.pk-ck{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
 .pk-row.done .pk-ck{background:var(--accent);border-color:var(--accent);color:#fff}
-.pk-name{flex:1}
-.pk-cnt{font-size:11px;color:var(--text2)}
-.pk-note{font-size:11px;color:var(--text2);margin-left:auto;white-space:nowrap}
+.pk-name{flex:1;line-height:1.4}
+.pk-cnt{font-size:11px;color:var(--text2);white-space:nowrap}
+.pk-note{font-size:10px;color:var(--text2);margin-top:2px}
 .pk-progress{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
 .pk-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
 .pk-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
 .pk-pct{font-size:13px;font-weight:700;color:var(--accent);min-width:40px;text-align:right}
-
-/* Bottom nav */
 .bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(10,10,11,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom)}
 .bnb{flex:1;border:none;background:none;color:var(--text2);font-size:10px;font-family:inherit;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent}
 .bnb:active,.bnb.act{color:var(--accent)}
 .bnb svg{width:22px;height:22px}
-
-.foot{text-align:center;padding:24px;font-size:11px;color:var(--text2);opacity:.5}
 @media(min-width:600px){body{max-width:460px;margin:0 auto}.menu{width:320px}}
 </style>
 </head>
 <body>
-
 <div class="hd">
   <div class="hd-left">
-    <button class="hbtn" id="menuBtn" onclick="toggleMenu()">☰</button>
+    <button class="hbtn" onclick="toggleMenu()">☰</button>
     <div><h1>🏔️ 云南 <span>2026</span></h1><div class="hd-day" id="hdDay">Day 1 · 5.4 周一</div></div>
   </div>
   <div class="hd-btns">
     <button class="hbtn" id="bkBtn" onclick="go('bk')">📋</button>
-    <button class="hbtn" id="prevBtn" onclick="nav(-1)">‹</button>
-    <button class="hbtn" id="nextBtn" onclick="nav(1)">›</button>
+    <button class="hbtn" id="pkBtn" onclick="go('pk')">🎒</button>
+    <button class="hbtn" onclick="nav(-1)">‹</button>
+    <button class="hbtn" onclick="nav(1)">›</button>
   </div>
 </div>
-
 <div class="ov" id="ov" onclick="toggleMenu()"></div>
 <div class="menu" id="menu"></div>
-
 <div id="app"></div>
-
 <div class="bnav">
-  <button class="bnb" id="bPrev" onclick="nav(-1)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>上一天
-  </button>
-  <button class="bnb" id="bBk" onclick="go('bk')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>预约
-  </button>
-  <button class="bnb" id="bNext" onclick="nav(1)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>下一天
-  </button>
+  <button class="bnb" onclick="nav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>上一天</button>
+  <button class="bnb" id="bBk" onclick="go('bk')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>预约</button>
+  <button class="bnb" id="bPk" onclick="go('pk')">🎒清单</button>
+  <button class="bnb" onclick="nav(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>下一天</button>
 </div>
-
 <script>
 const D=[
 {d:1,dt:"5.4",wd:"周一",th:"武汉 → 丽江 · 古城初印象",city:"丽江",alt:"2400m",ev:[
@@ -277,19 +249,17 @@ const D=[
 
 const tgM={f:{t:"美食",c:"tg-f"},k:{t:"门票",c:"tg-k"},h:{t:"住宿",c:"tg-h"},d:{t:"自驾",c:"tg-d"}};
 
-// Scenic bookings only (no trains/flights/cars)
 const bkData=[
 {name:"🏔️ 玉龙雪山大索道",day:"Day 3 (5月6日)",price:"180元/人",how:"微信小程序「丽江旅游集团」",when:"4月29日 20:00 开抢",lv:"hot",tip:"🔥 热门！必须准点抢，建议7:00-9:00时段"},
 {name:"🌲 普达措国家公园",day:"Day 9 (5月12日)",price:"258元/人（含观光车）",how:"微信小程序「普达措」/ 携程",when:"建议提前1-2天预订",lv:"soon",tip:"旺季可能限流"},
-{name:"🏛️ 松赞林寺",day:"Day 7 (5月10日)",price:"115元（含观光车）",how:"携程/美团提前预订",when:"建议提前1-2天",lv:"soon",tip:""},
-{name:"🏔️ 巴拉格宗",day:"Day 8 (5月11日)",price:"约170元（含观光车）",how:"携程/美团",when:"建议提前1天",lv:"easy",tip:""},
-{name:"🏛️ 崇圣寺三塔",day:"Day 14 (5月17日)",price:"75元",how:"携程/美团提前预订",when:"建议提前1天",lv:"easy",tip:""},
-{name:"🏔️ 苍山感通索道",day:"Day 13 (5月16日)",price:"往返约120元",how:"现场购票",when:"随到随买",lv:"easy",tip:""},
-{name:"🏛️ 木府",day:"Day 1 (5月4日)",price:"40元",how:"现场购票 / 携程",when:"随到随买",lv:"easy",tip:""},
+{name:"🏛️ 松赞林寺",day:"Day 7 (5月10日)",price:"115元（含观光车）",how:"携程/美团提前预订",when:"建议提前1-2天",lv:"soon"},
+{name:"🏔️ 巴拉格宗",day:"Day 8 (5月11日)",price:"约170元（含观光车）",how:"携程/美团",when:"建议提前1天",lv:"easy"},
+{name:"🏛️ 崇圣寺三塔",day:"Day 14 (5月17日)",price:"75元",how:"携程/美团提前预订",when:"建议提前1天",lv:"easy"},
+{name:"🏔️ 苍山感通索道",day:"Day 13 (5月16日)",price:"往返约120元",how:"现场购票",when:"随到随买",lv:"easy"},
+{name:"🏛️ 木府",day:"Day 1 (5月4日)",price:"40元",how:"现场购票 / 携程",when:"随到随买",lv:"easy"},
 {name:"🏨 泸沽湖湖景房",day:"Day 4-5 (5月7-8日)",price:"400-1500元/晚",how:"携程/美团/抖音",when:"建议提前1个月",lv:"hot",tip:"湖景房紧俏！务必提前订"}
 ];
 
-// Packing list
 const pkData=[
 {s:"🧥 衣物",items:[
 {n:"轻薄羽绒服/冲锋衣",c:"1件",tip:"5月早晚温差大，香格里拉可能降至5°C"},
@@ -300,13 +270,13 @@ const pkData=[
 {n:"舒适徒步鞋",c:"1双",tip:"防滑底，景区步行多"},
 {n:"凉鞋/拖鞋",c:"1双",tip:"酒店/沙滩"},
 {n:"内衣袜子",c:"各4套",tip:""},
-{n:"遮阳帽/渔夫帽",c:"1顶",tip:"紫外线强"},
+{n:"遮阳帽/渔夫帽",c:"1顶",tip:"紫外线强"}
 ]},
-{s:"🧴 鴇肤防护",items:[
+{s:"🧴 护肤防护",items:[
 {n:"防晒霜 SPF50+",c:"1瓶",tip:"云南紫外线极强，每2小时补涂"},
 {n:"润唇膏(SPF)",c:"1支",tip:"高原嘴唇容易干裂"},
 {n:"保湿面霜",c:"1瓶",tip:"高原干燥"},
-{n:"墨镜",c:"1副",tip:"防紫外线"},
+{n:"墨镜",c:"1副",tip:"防紫外线"}
 ]},
 {s:"💊 高原药品",items:[
 {n:"红景天",c:"1瓶",tip:"出发前7天开始服用"},
@@ -316,55 +286,76 @@ const pkData=[
 {n:"肠胃药",c:"1盒",tip:"水土不服"},
 {n:"创可贴",c:"1盒",tip:""},
 {n:"葡萄糖口服液",c:"3-5支",tip:"快速补充体力"},
-{n:"晕车药/贴",c:"若干",tip:"盘山路多"},
+{n:"晕车药/贴",c:"若干",tip:"盘山路多"}
 ]},
 {s:"🌧️ 雨具（5月雨季）",items:[
 {n:"折叠雨伞",c:"2把",tip:"轻便型"},
 {n:"一次性雨衣",c:"2件",tip:"景区徒步比伞方便"},
 {n:"防水手机袋",c:"2个",tip:"雨天拍照/坐船用"},
-{n:"防水鞋套",c:"2双",tip:"防鞋湿透"},
+{n:"防水鞋套",c:"2双",tip:"防鞋湿透"}
 ]},
 {s:"🏔️ 雪山装备",items:[
 {n:"暖宝宝/发热贴",c:"若干",tip:"贴身上保暖"},
 {n:"保温杯",c:"1个",tip:"高原多喝热水"},
 {n:"能量棒/巧克力",c:"若干",tip:"登山补充体力"},
-{n:"充电宝",c:"1个",tip:"20000mAh以上"},
+{n:"充电宝",c:"1个",tip:"20000mAh以上"}
 ]},
 {s:"📱 电子/证件",items:[
 {n:"身份证",c:"2张",tip:""},
 {n:"驾驶证",c:"1张",tip:"租车用"},
 {n:"信用卡",c:"1-2张",tip:""},
 {n:"少量现金",c:"500-1000元",tip:"部分景区/小店不支持手机支付"},
-{n:"手机充电线",c:"2根",tip:""},
+{n:"手机充电线",c:"2根",tip:""}
 ]},
 {s:"🧴 洗漱日用",items:[
 {n:"旅行洗漱套装",c:"1套",tip:"牙膏牙刷毛巾"},
 {n:"补水面膜",c:"若干",tip:"高原皮肤干"},
-{n:"纸巾/湿巾",c:"若干",tip:""},
+{n:"纸巾/湿巾",c:"若干",tip:""}
 ]},
 {s:"🎒 其他",items:[
 {n:"行李箱 24寸",c:"1个",tip:"托运"},
 {n:"双肩包",c:"1个",tip:"日常出门背"},
 {n:"收纳袋/压缩袋",c:"若干",tip:"分类装衣物"},
-{n:"保温水壶",c:"1个",tip:"路上喝热水"},
-]},
+{n:"塑料袋",c:"2-3个",tip:"装湿衣服/垃圾"}
+]}
 ];
 
 let curD=1;
+const PK_KEY='yn2026_pk';
+
+function getPkState(){
+  try{return JSON.parse(localStorage.getItem(PK_KEY))||{}}catch(e){return{}}
+}
+function savePkState(s){localStorage.setItem(PK_KEY,JSON.stringify(s))}
+function togglePk(key,el){
+  const st=getPkState();
+  st[key]=!st[key];
+  savePkState(st);
+  el.classList.toggle('done');
+  updatePkProgress();
+}
+function updatePkProgress(){
+  let total=0,done=0;
+  pkData.forEach(s=>s.items.forEach((_,i)=>{total++;if(getPkState()[s.s+'_'+i])done++}));
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('pkFill').style.width=pct+'%';
+  document.getElementById('pkPct').textContent=pct+'%';
+}
+
 function init(){
   const menu=document.getElementById('menu');
   const app=document.getElementById('app');
-  // Menu items
   let mh='<div class="menu-hd">📅 选择日程</div>';
   mh+=`<button class="mi" data-d="bk" onclick="go('bk');toggleMenu()"><span class="mi-num">📋</span><span class="mi-info">景点预约提醒<span class="mi-th">需提前预订的景点清单</span></span></button>`;
+  mh+=`<button class="mi" data-d="pk" onclick="go('pk');toggleMenu()"><span class="mi-num">🎒</span><span class="mi-info">物资准备清单<span class="mi-th">可勾选打勾，进度保存到本地</span></span></button>`;
   D.forEach(r=>{
     mh+=`<button class="mi" data-d="${r.d}" onclick="go(${r.d});toggleMenu()"><span class="mi-num">D${r.d}</span><span class="mi-info">${r.dt} ${r.wd}<span class="mi-th">${r.th}</span></span></button>`;
   });
   menu.innerHTML=mh;
-  // Day contents
+
   D.forEach(r=>{
     const c=document.createElement('div');
-    c.className='ct';c.id=`d${r.d}`;
+    c.className='ct';c.id='d'+r.d;
     let h=`<div class="badge">📍 ${r.city} · ${r.alt}</div><div class="theme">${r.th}</div><div class="tl">`;
     r.ev.forEach(e=>{
       h+=`<div class="ev"><div class="ec"><div class="t">${e.t}</div><div class="tt">${e.tt}</div>`;
@@ -379,43 +370,93 @@ function init(){
     h+=`<div class="bgb"><span class="lb">\ud83d\udcb0 今日预算（2人）</span><span class="am">${r.b}</span></div>`;
     c.innerHTML=h;app.appendChild(c);
   });
+
   // Booking page
   const bk=document.createElement('div');
   bk.className='ct';bk.id='dBk';
-  let bh='<div class="theme">\ud83d\udccb 景点预约提醒</div>';
-  bh+='<div class="nt" style="margin-bottom:12px">\u26a0\ufe0f 只含需提前预订的景点门票和住宿，不含车票机票</div>';
+  let bh='<div class="theme">📋 景点预约提醒</div>';
+  bh+='<div class="nt" style="margin-bottom:12px">⚠️ 只含需提前预订的景点门票和住宿，不含车票机票</div>';
   bkData.forEach(b=>{
     bh+=`<div class="bk-item"><div class="bk-head"><span class="bk-name">${b.name}</span><span class="bk-price">${b.price}</span></div>`;
-    bh+=`<div class="bk-day">\ud83d\udcc5 ${b.day}</div>`;
-    bh+=`<div class="bk-how">\ud83d\udca1 ${b.how}</div>`;
-    bh+=`<div class="bk-when ${b.lv}">\u23f0 ${b.when}</div>`;
+    bh+=`<div class="bk-day">📅 ${b.day}</div>`;
+    bh+=`<div class="bk-how">💡 ${b.how}</div>`;
+    bh+=`<div class="bk-when ${b.lv}">⏰ ${b.when}</div>`;
     if(b.tip)bh+=`<div style="margin-top:6px;font-size:11px;color:var(--accent)">${b.tip}</div>`;
     bh+='</div>';
   });
   bk.innerHTML=bh;app.appendChild(bk);
+
+  // Packing page
+  const pk=document.createElement('div');
+  pk.className='ct';pk.id='dPk';
+  const pst=getPkState();
+  let total=0,done=0;
+  let ph='<div class="theme">🎒 物资准备清单</div>';
+  ph+='<div class="nt" style="margin-bottom:12px">✅ 点击物品可打勾，勾选状态自动保存到本地</div>';
+  ph+='<div class="pk-progress"><div class="pk-bar"><div class="pk-fill" id="pkFill"></div></div><div class="pk-pct" id="pkPct">0%</div></div>';
+  pkData.forEach((sec,si)=>{
+    ph+=`<div class="pk-sec"><div class="pk-sec-title">${sec.s}</div>`;
+    sec.items.forEach((it,ii)=>{
+      const key=sec.s+'_'+ii;
+      const ck=pst[key];
+      if(ck)done++;
+      total++;
+      ph+=`<div class="pk-row${ck?' done':''}" onclick="togglePk('${key}',this)">`;
+      ph+=`<div class="pk-ck">${ck?'✓':''}</div>`;
+      ph+=`<div><div class="pk-name">${it.n}</div>`;
+      if(it.tip)ph+=`<div class="pk-note">${it.tip}</div>`;
+      ph+=`</div>`;
+      ph+=`<div class="pk-cnt">${it.c}</div>`;
+      ph+=`</div>`;
+    });
+    ph+=`</div>`;
+  });
+  pk.innerHTML=ph;app.appendChild(pk);
+  // set initial progress
+  setTimeout(()=>{
+    const pct=total?Math.round(done/total*100):0;
+    const fill=document.getElementById('pkFill');
+    const pctEl=document.getElementById('pkPct');
+    if(fill)fill.style.width=pct+'%';
+    if(pctEl)pctEl.textContent=pct+'%';
+  },50);
+
   auto();
 }
 
 function go(d){
   document.querySelectorAll('.mi').forEach(m=>m.classList.remove('act'));
   document.querySelectorAll('.ct').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.hbtn.act,.bnb.act').forEach(b=>b.classList.remove('act'));
   if(d==='bk'){
-    document.querySelector('.mi[data-d="bk"]').classList.add('act');
+    const mi=document.querySelector('.mi[data-d="bk"]');
+    if(mi)mi.classList.add('act');
     document.getElementById('dBk').classList.add('on');
     document.getElementById('hdDay').textContent='景点预约提醒';
     document.getElementById('bkBtn').classList.add('act');
+    document.getElementById('bBk').classList.add('act');
+  }else if(d==='pk'){
+    const mi=document.querySelector('.mi[data-d="pk"]');
+    if(mi)mi.classList.add('act');
+    document.getElementById('dPk').classList.add('on');
+    document.getElementById('hdDay').textContent='🎒 物资准备清单';
+    document.getElementById('pkBtn').classList.add('act');
+    document.getElementById('bPk').classList.add('act');
   }else{
     curD=d;
     const r=D.find(x=>x.d===d);
-  mh+=`<button class="mi" data-d="bk" onclick="go('bk');toggleMenu()"><span class="mi-num">📋</span><span class="mi-info">景点预约提醒<span class="mi-th">需提前预订的景点清单</span></span></button>`;
+    const mi=document.querySelector('.mi[data-d="'+d+'"]');
+    if(mi)mi.classList.add('act');
+    const ct=document.getElementById('d'+d);
+    if(ct)ct.classList.add('on');
+    document.getElementById('hdDay').textContent='Day '+d+' · '+r.dt+' '+r.wd;
+  }
 }
 
-    document.getElementById('bkBtn').classList.add('act');
-  }else{
-    document.getElementById('hdDay').textContent='景点预约提醒';
-  }else{
-    document.getElementById('bkBtn').classList.remove('act');
-  }
+function nav(dir){
+  if(typeof curD!=='number')curD=1;
+  const nd=Math.max(1,Math.min(15,curD+dir));
+  if(nd!==curD)go(nd);
 }
 
 function toggleMenu(){document.getElementById('menu').classList.toggle('on');document.getElementById('ov').classList.toggle('on')}
@@ -425,13 +466,13 @@ function openLoc(name,lat,lng,e){
   const ua=navigator.userAgent;
   const isA=/Android/i.test(ua),isI=/iPhone|iPad|iPod/i.test(ua);
   if(isA){
-    window.location.href=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
-    setTimeout(()=>{window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`,'_blank')},2000);
+    window.location.href='intent://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
+    setTimeout(()=>{window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1','_blank')},2000);
   }else if(isI){
-    window.location.href=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0`;
-    setTimeout(()=>{window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`,'_blank')},2000);
+    window.location.href='iosamap://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
+    setTimeout(()=>{window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1','_blank')},2000);
   }else{
-    window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}`,'_blank');
+    window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name),'_blank');
   }
 }
 
@@ -442,13 +483,11 @@ function auto(){
   go(d);
 }
 
-// Swipe support
 let sx=0;
 document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
 document.addEventListener('touchend',e=>{
   const dx=e.changedTouches[0].clientX-sx;
   if(Math.abs(dx)>80){
-    // Only swipe if not in menu and not swiping on a link
     if(document.getElementById('menu').classList.contains('on'))return;
     if(e.target.closest('.ll'))return;
     if(dx>0&&curD>1)nav(-1);
