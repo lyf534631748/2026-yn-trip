@@ -54,6 +54,7 @@ body{
 }
 .tb.act{color:#fff;background:var(--accent)}
 .tb.now{color:var(--accent)}
+.tb.book{color:var(--warn)}
 
 /* Content */
 .ct{padding:8px 12px 80px;display:none}
@@ -127,6 +128,25 @@ body{
 .bg .am{font-size:15px;font-weight:700;color:var(--accent)}
 
 .foot{text-align:center;padding:24px;font-size:11px;color:var(--text2);opacity:.5}
+
+/* Booking page */
+.bk-item{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:14px;margin-bottom:10px;
+}
+.bk-item .bk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.bk-item .bk-name{font-size:14px;font-weight:700;flex:1}
+.bk-item .bk-price{font-size:12px;color:var(--accent);font-weight:600;white-space:nowrap}
+.bk-item .bk-day{font-size:11px;color:var(--text2);margin-bottom:4px}
+.bk-item .bk-how{font-size:12px;color:var(--text2);line-height:1.5}
+.bk-item .bk-when{
+  margin-top:8px;padding:8px 10px;
+  background:rgba(239,68,68,.08);border-radius:8px;
+  font-size:12px;color:#f87171;font-weight:600;
+}
+.bk-item .bk-when.ok{background:rgba(52,211,153,.08);color:#34d399}
+.bk-item .bk-when.warn{background:rgba(251,191,36,.08);color:#fbbf24}
+
 @media(min-width:600px){body{max-width:460px;margin:0 auto}}
 </style>
 </head>
@@ -288,11 +308,60 @@ const D=[
 ];
 
 const tgM={f:{t:"美食",c:"tg-f"},k:{t:"门票",c:"tg-k"},h:{t:"住宿",c:"tg-h"},d:{t:"自驾",c:"tg-d"}};
-function aL(n,la,lo){return `https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}&callnative=1`}
+
+// Location link: native app first, fallback to web
+function openLoc(n,la,lo,e){
+  e.preventDefault();
+  const ua=navigator.userAgent;
+  const isAndroid=/Android/i.test(ua);
+  const isIOS=/iPhone|iPad|iPod/i.test(ua);
+  let appUrl,webUrl;
+  if(isAndroid){
+    // Android intent scheme for amap
+    appUrl=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(n)}&lat=${la}&lon=${lo}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
+    webUrl=`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}&callnative=1`;
+    window.location.href=appUrl;
+    setTimeout(()=>{window.open(webUrl,'_blank')},1500);
+  } else if(isIOS){
+    appUrl=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(n)}&lat=${la}&lon=${lo}&dev=0`;
+    webUrl=`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}&callnative=1`;
+    window.location.href=appUrl;
+    setTimeout(()=>{window.open(webUrl,'_blank')},1500);
+  } else {
+    window.open(`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}`,'_blank');
+  }
+}
+
+// Booking data
+const bookings=[
+  {name:"🏔️ 玉龙雪山大索道",day:"Day 3 (5月6日)",price:"180元/人（含环保车）",how:"微信小程序「丽江旅游集团」→ 大索道票",when:"4月29日 20:00 开抢（提前7天）",level:"warn",tip:"热门！必须准点抢，建议抢7:00-9:00时段"},
+  {name:"🏛️ 木府",day:"Day 1 (5月4日)",price:"40元",how:"现场购票 / 携程/美团提前预订",when:"随到随买",level:"ok",tip:""},
+  {name:"🏛️ 松赞林寺",day:"Day 7 (5月10日)",price:"115元（含观光车）",how:"现场购票 / 携程提前预订",when:"建议提前1-2天",level:"ok",tip:""},
+  {name:"🏔️ 巴拉格宗",day:"Day 8 (5月11日)",price:"约170元（含观光车）",how:"现场购票 / 携程/美团",when:"建议提前1天",level:"ok",tip:""},
+  {name:"🌲 普达措国家公园",day:"Day 9 (5月12日)",price:"258元（含观光车）",how:"微信小程序「普达措」/ 携程/美团",when:"建议提前1-2天",level:"ok",tip:"旺季可能限流"},
+  {name:"🏔️ 苍山感通索道",day:"Day 13 (5月16日)",price:"往返约120元",how:"现场购票",when:"随到随买",level:"ok",tip:""},
+  {name:"🏛️ 崇圣寺三塔",day:"Day 14 (5月17日)",price:"75元",how:"携程/美团提前预订",when:"建议提前1天",level:"ok",tip:""},
+  {name:"🚄 丽江→香格里拉高铁",day:"Day 6 (5月9日)",price:"二等座70元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"选C87次(13:50)"},
+  {name:"🚄 香格里拉→大理高铁",day:"Day 10 (5月13日)",price:"二等座129元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"选C988次(09:35)"},
+  {name:"🚄 大理→昆明高铁",day:"Day 14 (5月17日)",price:"二等座145元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"班次较多"},
+  {name:"✈️ 武汉→丽江机票",day:"Day 1 (5月4日)",price:"约1200-1800元",how:"携程/飞猪/航司APP",when:"建议提前2-3个月",level:"ok",tip:"选早班机"},
+  {name:"✈️ 昆明→武汉机票",day:"Day 15 (5月18日)",price:"约1000-1800元",how:"携程/飞猪/航司APP",when:"建议提前1-2个月",level:"ok",tip:""},
+  {name:"🚗 第一段租车",day:"Day 4-6 (5月7-9日)",price:"约400-600元/2天",how:"神州/一嗨租车APP",when:"建议提前2周预订",level:"ok",tip:"丽江三义机场取，丽江还"},
+  {name:"🚗 第二段租车",day:"Day 10-14 (5月13-17日)",price:"约800-1200元/4天",how:"神州/一嗨租车APP",when:"建议提前2周预订",level:"ok",tip:"大理取还"},
+  {name:"🏨 泸沽湖湖景房",day:"Day 4-5 (5月7-8日)",price:"400-1500元/晚",how:"携程/美团/抖音",when:"建议提前1个月预订",level:"warn",tip:"湖景房紧俏！务必提前订"}
+];
 
 function init(){
   const tb=document.getElementById('tabs');
   const app=document.getElementById('app');
+
+  // Booking tab first
+  const bb=document.createElement('button');
+  bb.className='tb book';bb.dataset.d='bk';
+  bb.textContent='📋 预约';
+  bb.onclick=()=>go('bk');
+  tb.appendChild(bb);
+
   D.forEach(r=>{
     // tab
     const b=document.createElement('button');
@@ -310,7 +379,7 @@ function init(){
       h+=`<div class="ev"><div class="ec">`;
       h+=`<div class="t">${e.t}</div><div class="tt">${e.tt}</div>`;
       if(e.ds)h+=`<div class="ds">${e.ds}</div>`;
-      if(e.lc)e.lc.forEach(l=>{h+=`<a class="ll" href="${aL(l.n,l.la,l.lo)}" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.n}</a>`});
+      if(e.lc)e.lc.forEach(l=>{h+=`<span class="ll" onclick="openLoc('${l.n.replace(/'/g,"\\'")}',${l.la},${l.lo},event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.n}</span>`});
       if(e.tg){h+='<div class="tgs">';e.tg.forEach(t=>{if(tgM[t])h+=`<span class="tg ${tgM[t].c}">${tgM[t].t}</span>`});h+='</div>'}
       h+=`</div></div>`;
     });
@@ -320,15 +389,57 @@ function init(){
     h+=`<div class="bg"><span class="lb">💰 今日预算（2人）</span><span class="am">${r.b}</span></div>`;
     c.innerHTML=h;app.appendChild(c);
   });
+  // Booking page
+  const bk=document.createElement('div');
+  bk.className='ct';bk.id='dBk';
+  let bh='<div class="theme">📋 预约提醒清单</div>';
+  bh+='<div class="nt" style="margin-bottom:12px">按紧急程度排序，⚠️ 为需要重点关注的项目。出发前请逐项确认！</div>';
+  bookings.forEach(b=>{
+    const cls=b.level==='warn'?'warn':b.level==='ok'?'ok':'';
+    bh+=`<div class="bk-item"><div class="bk-head"><span class="bk-name">${b.name}</span><span class="bk-price">${b.price}</span></div>`;
+    bh+=`<div class="bk-day">📅 ${b.day}</div>`;
+    bh+=`<div class="bk-how">💡 ${b.how}</div>`;
+    bh+=`<div class="bk-when ${cls}">⏰ ${b.when}</div>`;
+    if(b.tip)bh+=`<div style="margin-top:6px;font-size:11px;color:var(--accent)">${b.tip}</div>`;
+    bh+='</div>';
+  });
+  bk.innerHTML=bh;
+  app.appendChild(bk);
+
   auto();
+}
+
+function openLoc(name,lat,lng,e){
+  e.stopPropagation();
+  const ua=navigator.userAgent;
+  const isAndroid=/Android/i.test(ua);
+  const isIOS=/iPhone|iPad|iPod/i.test(ua);
+  if(isAndroid){
+    const appUrl=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
+    const webUrl=`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`;
+    window.location.href=appUrl;
+    setTimeout(()=>{window.open(webUrl,'_blank')},2000);
+  }else if(isIOS){
+    const appUrl=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0`;
+    const webUrl=`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`;
+    window.location.href=appUrl;
+    setTimeout(()=>{window.open(webUrl,'_blank')},2000);
+  }else{
+    window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}`,'_blank');
+  }
 }
 
 function go(d){
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('act'));
-  document.querySelector(`.tb[data-d="${d}"]`).classList.add('act');
   document.querySelectorAll('.ct').forEach(c=>c.classList.remove('on'));
-  document.getElementById(`d${d}`).classList.add('on');
-  document.querySelector(`.tb[data-d="${d}"]`).scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  if(d==='bk'){
+    document.querySelector('.tb[data-d="bk"]').classList.add('act');
+    document.getElementById('dBk').classList.add('on');
+  }else{
+    document.querySelector(`.tb[data-d="${d}"]`).classList.add('act');
+    document.getElementById(`d${d}`).classList.add('on');
+    document.querySelector(`.tb[data-d="${d}"]`).scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  }
 }
 
 function auto(){
