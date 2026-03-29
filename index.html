@@ -82,6 +82,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .bk-when.soon{background:rgba(251,191,36,.08);color:#fbbf24}
 .bk-when.easy{background:rgba(52,211,153,.08);color:#34d399}
 
+/* Packing list */
+.pk-sec{margin-bottom:16px}
+.pk-sec-title{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px;padding-left:2px}
+.pk-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:4px;font-size:13px;-webkit-tap-highlight-color:transparent;cursor:pointer;user-select:none}
+.pk-row:active{background:var(--border)}
+.pk-row.done{opacity:.4;text-decoration:line-through}
+.pk-ck{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s}
+.pk-row.done .pk-ck{background:var(--accent);border-color:var(--accent);color:#fff}
+.pk-name{flex:1}
+.pk-cnt{font-size:11px;color:var(--text2)}
+.pk-note{font-size:11px;color:var(--text2);margin-left:auto;white-space:nowrap}
+.pk-progress{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.pk-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.pk-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.pk-pct{font-size:13px;font-weight:700;color:var(--accent);min-width:40px;text-align:right}
+
 /* Bottom nav */
 .bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(10,10,11,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom)}
 .bnb{flex:1;border:none;background:none;color:var(--text2);font-size:10px;font-family:inherit;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent}
@@ -273,6 +289,67 @@ const bkData=[
 {name:"🏨 泸沽湖湖景房",day:"Day 4-5 (5月7-8日)",price:"400-1500元/晚",how:"携程/美团/抖音",when:"建议提前1个月",lv:"hot",tip:"湖景房紧俏！务必提前订"}
 ];
 
+// Packing list
+const pkData=[
+{s:"🧥 衣物",items:[
+{n:"轻薄羽绒服/冲锋衣",c:"1件",tip:"5月早晚温差大，香格里拉可能降至5°C"},
+{n:"抓绒衣/卫衣",c:"1-2件",tip:"中间层保暖"},
+{n:"长袖T恤",c:"3-4件",tip:"日常穿着"},
+{n:"速干长裤",c:"2-3条",tip:"防晒防虫"},
+{n:"短裤/裙子",c:"1-2条",tip:"大理昆明较热"},
+{n:"舒适徒步鞋",c:"1双",tip:"防滑底，景区步行多"},
+{n:"凉鞋/拖鞋",c:"1双",tip:"酒店/沙滩"},
+{n:"内衣袜子",c:"各4套",tip:""},
+{n:"遮阳帽/渔夫帽",c:"1顶",tip:"紫外线强"},
+]},
+{s:"🧴 鴇肤防护",items:[
+{n:"防晒霜 SPF50+",c:"1瓶",tip:"云南紫外线极强，每2小时补涂"},
+{n:"润唇膏(SPF)",c:"1支",tip:"高原嘴唇容易干裂"},
+{n:"保湿面霜",c:"1瓶",tip:"高原干燥"},
+{n:"墨镜",c:"1副",tip:"防紫外线"},
+]},
+{s:"💊 高原药品",items:[
+{n:"红景天",c:"1瓶",tip:"出发前7天开始服用"},
+{n:"氧气瓶",c:"4-6瓶",tip:"古城药店买比景区便宜"},
+{n:"布洛芬",c:"1盒",tip:"缓解高反头痛"},
+{n:"感冒药",c:"1盒",tip:"温差大容易感冒"},
+{n:"肠胃药",c:"1盒",tip:"水土不服"},
+{n:"创可贴",c:"1盒",tip:""},
+{n:"葡萄糖口服液",c:"3-5支",tip:"快速补充体力"},
+{n:"晕车药/贴",c:"若干",tip:"盘山路多"},
+]},
+{s:"🌧️ 雨具（5月雨季）",items:[
+{n:"折叠雨伞",c:"2把",tip:"轻便型"},
+{n:"一次性雨衣",c:"2件",tip:"景区徒步比伞方便"},
+{n:"防水手机袋",c:"2个",tip:"雨天拍照/坐船用"},
+{n:"防水鞋套",c:"2双",tip:"防鞋湿透"},
+]},
+{s:"🏔️ 雪山装备",items:[
+{n:"暖宝宝/发热贴",c:"若干",tip:"贴身上保暖"},
+{n:"保温杯",c:"1个",tip:"高原多喝热水"},
+{n:"能量棒/巧克力",c:"若干",tip:"登山补充体力"},
+{n:"充电宝",c:"1个",tip:"20000mAh以上"},
+]},
+{s:"📱 电子/证件",items:[
+{n:"身份证",c:"2张",tip:""},
+{n:"驾驶证",c:"1张",tip:"租车用"},
+{n:"信用卡",c:"1-2张",tip:""},
+{n:"少量现金",c:"500-1000元",tip:"部分景区/小店不支持手机支付"},
+{n:"手机充电线",c:"2根",tip:""},
+]},
+{s:"🧴 洗漱日用",items:[
+{n:"旅行洗漱套装",c:"1套",tip:"牙膏牙刷毛巾"},
+{n:"补水面膜",c:"若干",tip:"高原皮肤干"},
+{n:"纸巾/湿巾",c:"若干",tip:""},
+]},
+{s:"🎒 其他",items:[
+{n:"行李箱 24寸",c:"1个",tip:"托运"},
+{n:"双肩包",c:"1个",tip:"日常出门背"},
+{n:"收纳袋/压缩袋",c:"若干",tip:"分类装衣物"},
+{n:"保温水壶",c:"1个",tip:"路上喝热水"},
+]},
+];
+
 let curD=1;
 function init(){
   const menu=document.getElementById('menu');
@@ -330,17 +407,15 @@ function go(d){
   }else{
     curD=d;
     const r=D.find(x=>x.d===d);
-    document.querySelector(`.mi[data-d="${d}"]`).classList.add('act');
-    document.getElementById(`d${d}`).classList.add('on');
-    document.getElementById('hdDay').textContent=`Day ${d} · ${r.dt} ${r.wd}`;
-    document.getElementById('bkBtn').classList.remove('act');
-  }
+  mh+=`<button class="mi" data-d="bk" onclick="go('bk');toggleMenu()"><span class="mi-num">📋</span><span class="mi-info">景点预约提醒<span class="mi-th">需提前预订的景点清单</span></span></button>`;
 }
 
-function nav(dir){
-  if(curD==='bk')curD=1;
-  const nd=Math.max(1,Math.min(15,curD+dir));
-  if(nd!==curD)go(nd);
+    document.getElementById('bkBtn').classList.add('act');
+  }else{
+    document.getElementById('hdDay').textContent='景点预约提醒';
+  }else{
+    document.getElementById('bkBtn').classList.remove('act');
+  }
 }
 
 function toggleMenu(){document.getElementById('menu').classList.toggle('on');document.getElementById('ov').classList.toggle('on')}
