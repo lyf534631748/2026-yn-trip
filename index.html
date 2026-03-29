@@ -6,102 +6,53 @@
 <title>云南14日深度游</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0a0a0b;
-  --card:#16161a;
-  --card2:#1c1c22;
-  --border:#2a2a32;
-  --text:#e8e8ec;
-  --text2:#8888a0;
-  --accent:#ff6b35;
-  --accent2:#ff8c5a;
-  --tag-bg:rgba(255,107,53,.12);
-  --loc-bg:rgba(56,189,248,.1);
-  --loc-text:#38bdf8;
-  --warn:#fbbf24;
-  --rain:#818cf8;
-}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:var(--bg);color:var(--text);
-  line-height:1.5;-webkit-font-smoothing:antialiased;
-  min-height:100vh;
-}
+:root{--bg:#0a0a0b;--card:#16161a;--border:#2a2a32;--text:#e8e8ec;--text2:#8888a0;--accent:#ff6b35;--tag-bg:rgba(255,107,53,.12);--loc-bg:rgba(56,189,248,.1);--loc-text:#38bdf8;--warn:#fbbf24;--rain:#818cf8}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;padding-bottom:56px}
 
-/* Slim header */
-.hd{
-  padding:12px 16px 8px;
-  position:sticky;top:0;z-index:100;
-  background:rgba(10,10,11,.85);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-}
-.hd h1{font-size:16px;font-weight:700;letter-spacing:.5px}
+/* Header */
+.hd{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;background:rgba(10,10,11,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hd-left{display:flex;align-items:center;gap:10px}
+.hd h1{font-size:16px;font-weight:700;letter-spacing:.3px}
 .hd h1 span{color:var(--accent)}
+.hd-day{font-size:12px;color:var(--text2);margin-top:1px}
+.hd-btns{display:flex;gap:6px}
+.hbtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.hbtn:active{background:var(--border)}
+.hbtn.act{border-color:var(--accent);color:var(--accent)}
 
-/* Tabs */
-.tabs{
-  display:flex;overflow-x:auto;gap:2px;padding:6px 12px;
-  background:var(--bg);position:sticky;top:49px;z-index:99;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
-}
-.tabs::-webkit-scrollbar{display:none}
-.tb{
-  flex:0 0 auto;padding:6px 12px;font-size:12px;font-weight:600;
-  color:var(--text2);border:none;background:none;cursor:pointer;
-  white-space:nowrap;border-radius:8px;transition:all .2s;
-  font-family:inherit;
-}
-.tb.act{color:#fff;background:var(--accent)}
-.tb.now{color:var(--accent)}
-.tb.book{color:var(--warn)}
+/* Overlay + Menu */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.ov.on{opacity:1;pointer-events:auto}
+.menu{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--card);z-index:201;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding-bottom:60px;border-right:1px solid var(--border)}
+.menu.on{transform:translateX(0)}
+.menu-hd{padding:20px 16px 12px;font-size:13px;color:var(--text2);font-weight:600;border-bottom:1px solid var(--border)}
+.mi{display:flex;align-items:center;gap:10px;padding:12px 16px;border:none;background:none;color:var(--text);font-size:14px;width:100%;text-align:left;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;border-bottom:1px solid rgba(42,42,50,.5)}
+.mi:active{background:rgba(255,255,255,.05)}
+.mi.act{color:var(--accent);background:var(--tag-bg)}
+.mi .mi-num{font-size:11px;color:var(--text2);font-weight:600;width:28px;flex-shrink:0}
+.mi.act .mi-num{color:var(--accent)}
+.mi .mi-info{flex:1;min-width:0}
+.mi .mi-th{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.mi.act .mi-th{color:var(--accent2)}
 
 /* Content */
-.ct{padding:8px 12px 80px;display:none}
+.ct{padding:10px 14px 80px;display:none}
 .ct.on{display:block}
-
-/* Day badge */
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:20px;
-  background:var(--tag-bg);font-size:11px;color:var(--accent);
-  margin-bottom:10px;font-weight:600;
-}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--tag-bg);font-size:11px;color:var(--accent);margin-bottom:10px;font-weight:600}
 .theme{font-size:17px;font-weight:700;margin-bottom:12px;line-height:1.4}
 
 /* Timeline */
 .tl{position:relative;padding-left:20px}
-.tl::before{
-  content:'';position:absolute;left:5px;top:8px;bottom:8px;
-  width:1px;background:var(--border);
-}
-
-/* Event */
+.tl::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:var(--border)}
 .ev{position:relative;margin-bottom:8px}
-.ev::before{
-  content:'';position:absolute;left:-18px;top:12px;
-  width:7px;height:7px;background:var(--accent);border-radius:50%;z-index:1;
-}
-.ec{
-  background:var(--card);border-radius:10px;padding:12px 14px;
-  border:1px solid var(--border);
-}
+.ev::before{content:'';position:absolute;left:-18px;top:12px;width:7px;height:7px;background:var(--accent);border-radius:50%;z-index:1}
+.ec{background:var(--card);border-radius:10px;padding:12px 14px;border:1px solid var(--border)}
 .ec .t{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:3px;letter-spacing:.3px}
 .ec .tt{font-size:14px;font-weight:600;margin-bottom:4px}
 .ec .ds{font-size:12px;color:var(--text2);line-height:1.5}
-
-/* Location link */
-.ll{
-  display:inline-flex;align-items:center;gap:3px;
-  color:var(--loc-text);font-size:12px;text-decoration:none;
-  padding:3px 8px;background:var(--loc-bg);border-radius:12px;
-  margin-top:6px;margin-right:4px;transition:background .2s;
-  cursor:pointer;border:none;font-family:inherit;
-}
+.ll{display:inline-flex;align-items:center;gap:3px;color:var(--loc-text);font-size:12px;padding:3px 8px;background:var(--loc-bg);border-radius:12px;margin-top:6px;margin-right:4px;cursor:pointer;border:none;font-family:inherit;-webkit-tap-highlight-color:transparent}
 .ll:active{background:rgba(56,189,248,.2)}
 .ll svg{width:12px;height:12px;flex-shrink:0}
-
-/* Tags */
 .tgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
 .tg{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
 .tg-f{background:rgba(251,191,36,.1);color:#fbbf24}
@@ -110,52 +61,67 @@ body{
 .tg-d{background:rgba(168,85,247,.1);color:#a855f7}
 
 /* Note */
-.nt{
-  background:rgba(251,191,36,.06);border-left:2px solid var(--warn);
-  border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;
-  font-size:12px;color:var(--text2);line-height:1.5;
-}
+.nt{background:rgba(251,191,36,.06);border-left:2px solid var(--warn);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--text2);line-height:1.5}
 .nt.w{background:rgba(239,68,68,.06);border-left-color:#ef4444}
 .nt.r{background:rgba(129,140,248,.06);border-left-color:var(--rain)}
 
 /* Budget */
-.bg{
-  display:flex;justify-content:space-between;align-items:center;
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  padding:10px 14px;margin-top:10px;
-}
-.bg .lb{font-size:12px;color:var(--text2)}
-.bg .am{font-size:15px;font-weight:700;color:var(--accent)}
+.bgb{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:10px}
+.bgb .lb{font-size:12px;color:var(--text2)}
+.bgb .am{font-size:15px;font-weight:700;color:var(--accent)}
 
-.foot{text-align:center;padding:24px;font-size:11px;color:var(--text2);opacity:.5}
-
-/* Booking page */
-.bk-item{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:14px;margin-bottom:10px;
-}
+/* Booking */
+.bk-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
 .bk-item .bk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
 .bk-item .bk-name{font-size:14px;font-weight:700;flex:1}
 .bk-item .bk-price{font-size:12px;color:var(--accent);font-weight:600;white-space:nowrap}
 .bk-item .bk-day{font-size:11px;color:var(--text2);margin-bottom:4px}
 .bk-item .bk-how{font-size:12px;color:var(--text2);line-height:1.5}
-.bk-item .bk-when{
-  margin-top:8px;padding:8px 10px;
-  background:rgba(239,68,68,.08);border-radius:8px;
-  font-size:12px;color:#f87171;font-weight:600;
-}
-.bk-item .bk-when.ok{background:rgba(52,211,153,.08);color:#34d399}
-.bk-item .bk-when.warn{background:rgba(251,191,36,.08);color:#fbbf24}
+.bk-item .bk-when{margin-top:8px;padding:8px 10px;border-radius:8px;font-size:12px;font-weight:600}
+.bk-when.hot{background:rgba(239,68,68,.08);color:#f87171}
+.bk-when.soon{background:rgba(251,191,36,.08);color:#fbbf24}
+.bk-when.easy{background:rgba(52,211,153,.08);color:#34d399}
 
-@media(min-width:600px){body{max-width:460px;margin:0 auto}}
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(10,10,11,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:100;padding:4px 0 env(safe-area-inset-bottom)}
+.bnb{flex:1;border:none;background:none;color:var(--text2);font-size:10px;font-family:inherit;cursor:pointer;padding:6px 0;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent}
+.bnb:active,.bnb.act{color:var(--accent)}
+.bnb svg{width:22px;height:22px}
+
+.foot{text-align:center;padding:24px;font-size:11px;color:var(--text2);opacity:.5}
+@media(min-width:600px){body{max-width:460px;margin:0 auto}.menu{width:320px}}
 </style>
 </head>
 <body>
 
-<div class="hd"><h1>🏔️ 云南14日深度游 <span>2026</span></h1></div>
-<div class="tabs" id="tabs"></div>
+<div class="hd">
+  <div class="hd-left">
+    <button class="hbtn" id="menuBtn" onclick="toggleMenu()">☰</button>
+    <div><h1>🏔️ 云南 <span>2026</span></h1><div class="hd-day" id="hdDay">Day 1 · 5.4 周一</div></div>
+  </div>
+  <div class="hd-btns">
+    <button class="hbtn" id="bkBtn" onclick="go('bk')">📋</button>
+    <button class="hbtn" id="prevBtn" onclick="nav(-1)">‹</button>
+    <button class="hbtn" id="nextBtn" onclick="nav(1)">›</button>
+  </div>
+</div>
+
+<div class="ov" id="ov" onclick="toggleMenu()"></div>
+<div class="menu" id="menu"></div>
+
 <div id="app"></div>
-<div class="foot">点击地点可跳转高德地图</div>
+
+<div class="bnav">
+  <button class="bnb" id="bPrev" onclick="nav(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>上一天
+  </button>
+  <button class="bnb" id="bBk" onclick="go('bk')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>预约
+  </button>
+  <button class="bnb" id="bNext" onclick="nav(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>下一天
+  </button>
+</div>
 
 <script>
 const D=[
@@ -168,25 +134,22 @@ const D=[
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"云雪丽·野生菌火锅 / 阿妈意·纳西美食",tg:["f"]},
 {t:"20:00-22:00",tt:"🌙 古城夜游",ds:"酒吧街听民谣 · 一米阳光 / 火塘酒吧",lc:[{n:"丽江古城酒吧街",la:26.8705,lo:100.2255}]}
 ],b:"2000-2400元",ns:["第一天到高原，动作放慢，多喝水"]},
-
 {d:2,dt:"5.5",wd:"周二",th:"束河 + 白沙 + 玉湖村",city:"丽江",alt:"2400m",ev:[
 {t:"09:00-09:30",tt:"🚗 前往束河古镇",ds:"打车约15元",lc:[{n:"束河古镇",la:26.9107,lo:100.2129}]},
 {t:"09:30-12:00",tt:"🏘️ 束河古镇",ds:"九鼎龙潭 · 青龙桥 · 四方街 · 比大研更安静",lc:[{n:"九鼎龙潭",la:26.9135,lo:100.2098},{n:"束河四方街",la:26.9105,lo:100.2125}]},
 {t:"12:00-13:00",tt:"🍜 午餐",ds:"小锅饭（云南家常菜 人均60-80元）",tg:["f"]},
-{t:"14:00-16:30",tt:"🏘️ 白沙古镇",ds:"白沙壁画(30元) · 纳西刺绣体验 · 丽江最古老集镇",lc:[{n:"白沙古镇",la:26.933,lo:100.1963},{n:"白沙壁画",la:26.9325,lo:100.1955}],tg:["k"]},
-{t:"16:30-18:30",tt:"🏡 玉湖村 + 日落",ds:"石头房村落 · 洛克故居 · 玉龙雪山倒影最佳拍摄点",lc:[{n:"玉湖村",la:26.952,lo:100.188}]},
+{t:"14:00-16:30",tt:"🏘️ 白沙古镇",ds:"白沙壁画(30元) · 纳西刺绣体验",lc:[{n:"白沙古镇",la:26.933,lo:100.1963},{n:"白沙壁画",la:26.9325,lo:100.1955}],tg:["k"]},
+{t:"16:30-18:30",tt:"🏡 玉湖村 + 日落",ds:"石头房村落 · 玉龙雪山倒影拍摄点",lc:[{n:"玉湖村",la:26.952,lo:100.188}]},
 {t:"19:00-20:00",tt:"🍜 晚餐",ds:"滇西王子·美食朝圣店（人均100-130元）",tg:["f"]}
 ],b:"800-1000元",ns:["💡 今晚准备明天雪山：服红景天、检查氧气瓶、打包干粮"]},
-
 {d:3,dt:"5.6",wd:"周三",th:"玉龙雪山一日游",city:"丽江",alt:"4680m",ev:[
 {t:"06:30-07:00",tt:"⏰ 早起准备",ds:"打包早餐，出发前1小时服红景天"},
 {t:"07:00-08:00",tt:"🚗 前往玉龙雪山",ds:"打车约60元，40分钟",lc:[{n:"玉龙雪山甘海子游客中心",la:27.104,lo:100.179}]},
 {t:"09:00-10:30",tt:"🏔️ 大索道登顶冰川公园",ds:"海拔4680米！缓慢行走吸氧，不适立即下撤",lc:[{n:"冰川公园",la:27.107,lo:100.173}],tg:["k"]},
-{t:"11:30-14:00",tt:"💎 蓝月谷",ds:"玉液湖 → 镜潭湖 → 蓝月湖 → 听涛湖 · 蓝绿色绝美",lc:[{n:"蓝月谷",la:27.092,lo:100.171}]},
+{t:"11:30-14:00",tt:"💎 蓝月谷",ds:"玉液湖 → 镜潭湖 → 蓝月湖 → 听涛湖",lc:[{n:"蓝月谷",la:27.092,lo:100.171}]},
 {t:"15:00-16:00",tt:"⬇️ 返回古城"},
-{t:"18:00-20:00",tt:"🍜 晚餐 + 足浴放松",ds:"有一锅·黑山羊腊排骨火锅 + 古城足浴",tg:["f"]}
+{t:"18:00-20:00",tt:"🍜 晚餐 + 足浴放松",tg:["f"]}
 ],b:"1200-1500元",ns:["⚠️ 穿羽绒服/冲锋衣（景区租50元），带2-3瓶氧气","🎫 大索道180元/人，提前7天（4.29 20:00）抢票"],rn:["白沙古镇+刺绣体验","丽江千古情(280元)","黑龙潭公园"]},
-
 {d:4,dt:"5.7",wd:"周四",th:"丽江 → 泸沽湖",city:"泸沽湖",alt:"2690m",ev:[
 {t:"07:00-08:00",tt:"🏨 退房 + 取车",ds:"第一段租车开始",tg:["d"]},
 {t:"08:00-12:30",tt:"🚗 丽江 → 泸沽湖",ds:"200公里约4小时，全程盘山路",lc:[{n:"泸沽湖",la:27.7,lo:100.78}],tg:["d"]},
@@ -196,64 +159,57 @@ const D=[
 {t:"19:30-21:00",tt:"🔥 篝火晚会",ds:"可选，约30元"},
 {t:"21:00-",tt:"⭐ 看星空",ds:"几乎无光污染！"}
 ],b:"约1090元",ns:["⚠️ 盘山路弯道多，5月可能遇阵雨路面湿滑","🏨 强烈建议住湖景房"]},
-
 {d:5,dt:"5.8",wd:"周五",th:"泸沽湖深度环湖",city:"泸沽湖",alt:"2690m",ev:[
 {t:"06:00-07:00",tt:"🌅 里格半岛日出",ds:"提前15分钟到观景台占位！",lc:[{n:"里格半岛观景台",la:27.7155,lo:100.767}]},
 {t:"08:00-10:00",tt:"🛶 猪槽船游湖",ds:"50-100元/人，1-1.5小时"},
-{t:"10:00-12:00",tt:"📸 北线环湖",ds:"女神湾、王妃岛等小众景点",lc:[{n:"女神湾",la:27.72,lo:100.755},{n:"王妃岛",la:27.705,lo:100.785}]},
+{t:"10:00-12:00",tt:"📸 北线环湖",ds:"女神湾、王妃岛",lc:[{n:"女神湾",la:27.72,lo:100.755},{n:"王妃岛",la:27.705,lo:100.785}]},
 {t:"12:00-13:00",tt:"🍜 午餐",ds:"里格岛农家菜（人均60-80元）",tg:["f"]},
-{t:"14:00-17:00",tt:"🚶 走婚桥 + 草海漫步",ds:"补拍不同角度"},
+{t:"14:00-17:00",tt:"🚶 走婚桥 + 草海漫步"},
 {t:"18:00-",tt:"⭐ 最后一晚星空",ds:"明天要赶路，早点休息"}
 ],b:"900-1000元",ns:["💡 摩梭家访可选（约80元/人）"]},
-
 {d:6,dt:"5.9",wd:"周六",th:"泸沽湖 → 香格里拉",city:"香格里拉",alt:"3280m",ev:[
 {t:"07:00-08:00",tt:"🏨 退房"},
 {t:"08:00-11:30",tt:"🚗 泸沽湖 → 丽江",ds:"190公里约3.3小时",tg:["d"]},
 {t:"11:30-12:30",tt:"🚗 还车",ds:"预留30-40分钟办理手续",tg:["d"]},
 {t:"12:30-13:30",tt:"🍜 丽江午餐",ds:"古城简餐 人均50-70元",tg:["f"]},
 {t:"13:50-15:00",tt:"🚄 高铁 → 香格里拉",ds:"C87次 二等座70元/人",lc:[{n:"香格里拉站",la:28.008,lo:99.71}]},
-{t:"15:30-17:30",tt:"🏨 入住休息",ds:"独克宗古城供氧房，适应海拔",lc:[{n:"独克宗古城",la:28.004,lo:99.706}],tg:["h"]},
+{t:"15:30-17:30",tt:"🏨 入住休息",ds:"独克宗古城供氧房",lc:[{n:"独克宗古城",la:28.004,lo:99.706}],tg:["h"]},
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"宏宏无烟石板烧烤 / 宗喀藏餐",tg:["f"]},
-{t:"20:00-21:00",tt:"🌙 古城漫步",ds:"世界最大转经筒，慢慢走",lc:[{n:"龟山公园大转经筒",la:28.0035,lo:99.7045}]}
+{t:"20:00-21:00",tt:"🌙 古城漫步",ds:"世界最大转经筒",lc:[{n:"龟山公园大转经筒",la:28.0035,lo:99.7045}]}
 ],b:"800-900元",ns:["⚠️ 海拔从2400跳到3280m，可能头痛气短","⚠️ 第一天到香格里拉不要洗澡！"]},
-
 {d:7,dt:"5.10",wd:"周日",th:"松赞林寺 + 纳帕海",city:"香格里拉",alt:"3280m",ev:[
-{t:"09:00-11:30",tt:"🏛️ 松赞林寺",ds:"「小布达拉宫」· 门票115元（含观光车）",lc:[{n:"噶丹·松赞林寺",la:27.927,lo:99.74}],tg:["k"]},
-{t:"11:30-12:00",tt:"📸 对面山坡拍全景",ds:"松赞林寺最佳全景机位"},
+{t:"09:00-11:30",tt:"🏛️ 松赞林寺",ds:"「小布达拉宫」门票115元（含观光车）",lc:[{n:"噶丹·松赞林寺",la:27.927,lo:99.74}],tg:["k"]},
+{t:"11:30-12:00",tt:"📸 对面山坡拍全景",ds:"最佳全景机位"},
 {t:"12:00-13:30",tt:"🍜 午餐",ds:"在水一方牦牛肉火锅 / 五彩雪域藏餐馆",tg:["f"]},
 {t:"14:00-17:00",tt:"🐎 纳帕海草原",ds:"环湖约40公里 · 骑马约100元/小时",lc:[{n:"纳帕海",la:27.96,lo:99.65},{n:"依拉草原",la:27.955,lo:99.645}]},
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"牛牛藏餐吧 / 静静的嘛呢石藏餐",tg:["f"]}
 ],b:"1100-1300元",ns:["💡 建议包车游纳帕海（约200-300元/车）"],rn:["藏人博物馆","唐卡画院体验(150元/人)","独克宗古城深度逛"]},
-
 {d:8,dt:"5.11",wd:"周一",th:"巴拉格宗一日游",city:"香格里拉",alt:"2000-3280m",ev:[
 {t:"08:30-09:30",tt:"🚗 包车前往巴拉格宗",ds:"50公里约1小时，包车往返300-400元"},
 {t:"09:30-12:00",tt:"🏔️ 巴拉格宗（上午）",ds:"大峡谷(深2000米) · 格宗神山(5500m)",lc:[{n:"巴拉格宗景区",la:28.2,lo:99.55}],tg:["k"]},
 {t:"12:00-13:00",tt:"🍜 景区简餐",ds:"人均50-70元",tg:["f"]},
-{t:"13:00-16:00",tt:"🏘️ 巴拉格宗（下午）",ds:"巴拉村(千年藏族古村) · 通天峡(一线天)"},
+{t:"13:00-16:00",tt:"🏘️ 巴拉格宗（下午）",ds:"巴拉村 · 通天峡(一线天)"},
 {t:"16:00-17:00",tt:"🚗 返回香格里拉"},
 {t:"18:00-20:00",tt:"🍜 晚餐",tg:["f"]}
 ],b:"900-1100元",ns:["🎫 门票约170元（含观光车）","💡 海拔比市区低，身体更舒适"]},
-
 {d:9,dt:"5.12",wd:"周二",th:"普达措国家公园",city:"香格里拉",alt:"3500-4100m",ev:[
 {t:"08:30-09:00",tt:"🚕 前往普达措",ds:"25公里约30分钟"},
 {t:"09:00-12:00",tt:"🌲 属都湖",ds:"3.3公里木栈道 步行约2小时",lc:[{n:"普达措国家公园",la:27.933,lo:99.96},{n:"属都湖",la:27.93,lo:99.955}],tg:["k"]},
 {t:"12:00-13:00",tt:"🍜 午餐",ds:"景区简餐或自带干粮",tg:["f"]},
-{t:"14:00-16:30",tt:"💎 碧塔海",ds:"海拔3538m · 更原始 · 可乘船(50元) · 5月杜鹃花盛开",lc:[{n:"碧塔海",la:27.91,lo:99.98}]},
+{t:"14:00-16:30",tt:"💎 碧塔海",ds:"海拔3538m · 可乘船(50元) · 5月杜鹃花盛开",lc:[{n:"碧塔海",la:27.91,lo:99.98}]},
 {t:"16:30-17:30",tt:"🚕 返回"},
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"可选藏民家访+晚餐(人均150-200元)",tg:["f"]}
 ],b:"1200-1400元",ns:["🎫 普达措门票258元（含观光车）","⚠️ 海拔3500-4100m注意高反","🎒 明天出发大理，今晚整理行李"],rn:["松赞林卡下午茶(150元/人)","古城+藏香/唐卡体验"]},
-
 {d:10,dt:"5.13",wd:"周三",th:"香格里拉 → 大理",city:"大理",alt:"1972m",ev:[
 {t:"07:30-08:30",tt:"🏨 退房"},
 {t:"09:35-13:01",tt:"🚄 高铁 → 大理",ds:"C988次 历时3小时26分 二等座129元/人",lc:[{n:"大理站",la:25.59,lo:100.23}]},
 {t:"13:30-14:00",tt:"🏨 入住",ds:"古城周边",tg:["h"]},
 {t:"14:00-15:00",tt:"🍜 午餐",ds:"段公子·白族特色菜（人均80-100元）",tg:["f"]},
-{t:"15:00-18:00",tt:"🚶 大理古城闲逛",ds:"人民路 · 复兴路 · 五华楼 · 洋人街",lc:[{n:"大理古城",la:25.6065,lo:100.267},{n:"五华楼",la:25.6045,lo:100.267}]},
+{t:"15:00-18:00",tt:"🚶 大理古城闲逛",ds:"人民路 · 复兴路 · 五华楼",lc:[{n:"大理古城",la:25.6065,lo:100.267},{n:"五华楼",la:25.6045,lo:100.267}]},
 {t:"18:00-18:30",tt:"🚗 取车",ds:"第二段租车开始",tg:["d"]},
 {t:"18:30-20:00",tt:"🍜 晚餐",ds:"梅子箐餐厅/翠田（人均80-120元）",tg:["f"]},
 {t:"20:00-21:30",tt:"🌙 古城夜游",ds:"人民路听街头音乐"}
 ],b:"800-1000元",ns:["🎉 到大理海拔降至1972m，身体会轻松很多！"]},
-
 {d:11,dt:"5.14",wd:"周四",th:"洱海环湖 · 喜洲 + 双廊",city:"大理",alt:"1972m",ev:[
 {t:"08:30-09:30",tt:"🚗 → 喜洲古镇",ds:"沿环海西路 约20公里30分钟",lc:[{n:"喜洲古镇",la:25.645,lo:100.205}]},
 {t:"09:30-11:30",tt:"🏘️ 喜洲古镇",ds:"严家大院(20元) · 转角楼 · 喜洲粑粑必吃！",lc:[{n:"严家大院",la:25.6445,lo:100.204},{n:"喜洲转角楼",la:25.6438,lo:100.206}],tg:["k","f"]},
@@ -264,7 +220,6 @@ const D=[
 {t:"18:30-20:00",tt:"🍜 双廊晚餐",ds:"云禾壹海景庄园（人均150-180元）",tg:["f"]},
 {t:"20:00-21:00",tt:"🚗 返回大理古城"}
 ],b:"1000-1200元",ns:["🚗 环海东路风景最美，多停几次拍照"]},
-
 {d:12,dt:"5.15",wd:"周五",th:"沙溪古镇（住沙溪）",city:"沙溪",alt:"1972m",ev:[
 {t:"08:00-09:00",tt:"🏨 退房（行李放车上）"},
 {t:"09:00-11:00",tt:"🚗 → 沙溪",ds:"约120公里山路约2小时",lc:[{n:"沙溪古镇",la:26.367,lo:99.842}],tg:["d"]},
@@ -276,9 +231,8 @@ const D=[
 {t:"18:00-19:30",tt:"🍜 沙溪晚餐",ds:"白族菜（人均50-70元）",tg:["f"]},
 {t:"19:30-21:00",tt:"🌙 沙溪夜景",ds:"四方街暖灯 · 星空 · 几乎无光污染"}
 ],b:"700-900元",ns:["✨ 傍晚6点后游客散去只剩本地人，沙溪最迷人的时刻"]},
-
 {d:13,dt:"5.16",wd:"周六",th:"沙溪清晨 → 苍山 + 周城扎染",city:"大理",alt:"1972m",ev:[
-{t:"06:30-07:30",tt:"🌅 沙溪清晨",ds:"四方街晨雾 · 玉津桥日出 · 摄影黄金时段",lc:[{n:"玉津桥",la:26.365,lo:99.839}]},
+{t:"06:30-07:30",tt:"🌅 沙溪清晨",ds:"四方街晨雾 · 玉津桥日出",lc:[{n:"玉津桥",la:26.365,lo:99.839}]},
 {t:"08:30-10:30",tt:"🚗 沙溪 → 大理",ds:"约2小时",tg:["d"]},
 {t:"10:30-11:00",tt:"🚕 → 苍山感通索道"},
 {t:"11:00-13:00",tt:"🏔️ 苍山",ds:"感通索道往返120元 · 玉带云游路 · 俯瞰洱海",lc:[{n:"苍山感通索道",la:25.598,lo:100.235}],tg:["k"]},
@@ -286,19 +240,17 @@ const D=[
 {t:"14:30-17:30",tt:"🎨 周城扎染体验",ds:"中国扎染之乡 80-150元/人 成品可带走",lc:[{n:"周城",la:25.645,lo:100.15},{n:"璞真扎染",la:25.644,lo:100.148}]},
 {t:"18:00-20:00",tt:"🍜 告别晚餐",ds:"滇孃孃·云南创意菜（人均100-130元）",tg:["f"]},
 {t:"20:00-21:30",tt:"🛍️ 买伴手礼",ds:"鲜花饼 · 乳扇 · 普洱茶"}
-],b:"1100-1300元",ns:["💡 寂照庵 = 中国最美尼姑庵，多肉植物天堂，免费参观"]},
-
+],b:"1100-1300元",ns:["💡 寂照庵 = 中国最美尼姑庵，多肉植物天堂"]},
 {d:14,dt:"5.17",wd:"周日",th:"大理 → 昆明",city:"昆明",alt:"1891m",ev:[
 {t:"07:00-08:00",tt:"🏨 退房"},
 {t:"08:00-10:00",tt:"🏛️ 崇圣寺三塔",ds:"大理地标 门票75元 三塔倒影池拍照",lc:[{n:"崇圣寺三塔",la:25.62,lo:100.26}],tg:["k"]},
 {t:"10:30-11:30",tt:"🚗 还车 + 前往大理站",ds:"第二段租车结束",tg:["d"]},
 {t:"12:30-14:30",tt:"🚄 高铁 → 昆明",ds:"约2小时 二等座145元/人",lc:[{n:"昆明南站",la:24.89,lo:102.8}]},
 {t:"14:30-15:30",tt:"🏨 入住",ds:"翠湖/南屏街",tg:["h"]},
-{t:"15:30-18:00",tt:"🚶 昆明闲逛",ds:"翠湖公园 · 云南大学老校区",lc:[{n:"翠湖公园",la:25.044,lo:102.706}]},
+{t:"15:30-18:00",tt:"🚶 昆明闲逛",ds:"翠湖公园 · 云南大学",lc:[{n:"翠湖公园",la:25.044,lo:102.706}]},
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"建新园过桥米线 / 福照楼汽锅鸡",tg:["f"]},
-{t:"20:00-22:00",tt:"🌙 南屏街 · 金马碧鸡坊",ds:"昆明最热闹的夜生活区",lc:[{n:"金马碧鸡坊",la:25.029,lo:102.71}]}
+{t:"20:00-22:00",tt:"🌙 南屏街 · 金马碧鸡坊",lc:[{n:"金马碧鸡坊",la:25.029,lo:102.71}]}
 ],b:"1000-1200元",ns:["🎒 今晚整理行李，明天返程"]},
-
 {d:15,dt:"5.18",wd:"周一",th:"昆明 → 武汉 · 回家",city:"昆明→武汉",alt:"1891m",ev:[
 {t:"07:00-08:00",tt:"🍜 最后一顿云南早餐"},
 {t:"08:00-09:00",tt:"🚕 → 昆明长水机场",ds:"约40分钟",lc:[{n:"昆明长水国际机场",la:25.102,lo:102.929}]},
@@ -309,146 +261,125 @@ const D=[
 
 const tgM={f:{t:"美食",c:"tg-f"},k:{t:"门票",c:"tg-k"},h:{t:"住宿",c:"tg-h"},d:{t:"自驾",c:"tg-d"}};
 
-// Location link: native app first, fallback to web
-function openLoc(n,la,lo,e){
-  e.preventDefault();
-  const ua=navigator.userAgent;
-  const isAndroid=/Android/i.test(ua);
-  const isIOS=/iPhone|iPad|iPod/i.test(ua);
-  let appUrl,webUrl;
-  if(isAndroid){
-    // Android intent scheme for amap
-    appUrl=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(n)}&lat=${la}&lon=${lo}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
-    webUrl=`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}&callnative=1`;
-    window.location.href=appUrl;
-    setTimeout(()=>{window.open(webUrl,'_blank')},1500);
-  } else if(isIOS){
-    appUrl=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(n)}&lat=${la}&lon=${lo}&dev=0`;
-    webUrl=`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}&callnative=1`;
-    window.location.href=appUrl;
-    setTimeout(()=>{window.open(webUrl,'_blank')},1500);
-  } else {
-    window.open(`https://uri.amap.com/marker?position=${lo},${la}&name=${encodeURIComponent(n)}`,'_blank');
-  }
-}
-
-// Booking data
-const bookings=[
-  {name:"🏔️ 玉龙雪山大索道",day:"Day 3 (5月6日)",price:"180元/人（含环保车）",how:"微信小程序「丽江旅游集团」→ 大索道票",when:"4月29日 20:00 开抢（提前7天）",level:"warn",tip:"热门！必须准点抢，建议抢7:00-9:00时段"},
-  {name:"🏛️ 木府",day:"Day 1 (5月4日)",price:"40元",how:"现场购票 / 携程/美团提前预订",when:"随到随买",level:"ok",tip:""},
-  {name:"🏛️ 松赞林寺",day:"Day 7 (5月10日)",price:"115元（含观光车）",how:"现场购票 / 携程提前预订",when:"建议提前1-2天",level:"ok",tip:""},
-  {name:"🏔️ 巴拉格宗",day:"Day 8 (5月11日)",price:"约170元（含观光车）",how:"现场购票 / 携程/美团",when:"建议提前1天",level:"ok",tip:""},
-  {name:"🌲 普达措国家公园",day:"Day 9 (5月12日)",price:"258元（含观光车）",how:"微信小程序「普达措」/ 携程/美团",when:"建议提前1-2天",level:"ok",tip:"旺季可能限流"},
-  {name:"🏔️ 苍山感通索道",day:"Day 13 (5月16日)",price:"往返约120元",how:"现场购票",when:"随到随买",level:"ok",tip:""},
-  {name:"🏛️ 崇圣寺三塔",day:"Day 14 (5月17日)",price:"75元",how:"携程/美团提前预订",when:"建议提前1天",level:"ok",tip:""},
-  {name:"🚄 丽江→香格里拉高铁",day:"Day 6 (5月9日)",price:"二等座70元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"选C87次(13:50)"},
-  {name:"🚄 香格里拉→大理高铁",day:"Day 10 (5月13日)",price:"二等座129元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"选C988次(09:35)"},
-  {name:"🚄 大理→昆明高铁",day:"Day 14 (5月17日)",price:"二等座145元/人",how:"12306 APP / 网站",when:"建议提前5-7天",level:"warn",tip:"班次较多"},
-  {name:"✈️ 武汉→丽江机票",day:"Day 1 (5月4日)",price:"约1200-1800元",how:"携程/飞猪/航司APP",when:"建议提前2-3个月",level:"ok",tip:"选早班机"},
-  {name:"✈️ 昆明→武汉机票",day:"Day 15 (5月18日)",price:"约1000-1800元",how:"携程/飞猪/航司APP",when:"建议提前1-2个月",level:"ok",tip:""},
-  {name:"🚗 第一段租车",day:"Day 4-6 (5月7-9日)",price:"约400-600元/2天",how:"神州/一嗨租车APP",when:"建议提前2周预订",level:"ok",tip:"丽江三义机场取，丽江还"},
-  {name:"🚗 第二段租车",day:"Day 10-14 (5月13-17日)",price:"约800-1200元/4天",how:"神州/一嗨租车APP",when:"建议提前2周预订",level:"ok",tip:"大理取还"},
-  {name:"🏨 泸沽湖湖景房",day:"Day 4-5 (5月7-8日)",price:"400-1500元/晚",how:"携程/美团/抖音",when:"建议提前1个月预订",level:"warn",tip:"湖景房紧俏！务必提前订"}
+// Scenic bookings only (no trains/flights/cars)
+const bkData=[
+{name:"🏔️ 玉龙雪山大索道",day:"Day 3 (5月6日)",price:"180元/人",how:"微信小程序「丽江旅游集团」",when:"4月29日 20:00 开抢",lv:"hot",tip:"🔥 热门！必须准点抢，建议7:00-9:00时段"},
+{name:"🌲 普达措国家公园",day:"Day 9 (5月12日)",price:"258元/人（含观光车）",how:"微信小程序「普达措」/ 携程",when:"建议提前1-2天预订",lv:"soon",tip:"旺季可能限流"},
+{name:"🏛️ 松赞林寺",day:"Day 7 (5月10日)",price:"115元（含观光车）",how:"携程/美团提前预订",when:"建议提前1-2天",lv:"soon",tip:""},
+{name:"🏔️ 巴拉格宗",day:"Day 8 (5月11日)",price:"约170元（含观光车）",how:"携程/美团",when:"建议提前1天",lv:"easy",tip:""},
+{name:"🏛️ 崇圣寺三塔",day:"Day 14 (5月17日)",price:"75元",how:"携程/美团提前预订",when:"建议提前1天",lv:"easy",tip:""},
+{name:"🏔️ 苍山感通索道",day:"Day 13 (5月16日)",price:"往返约120元",how:"现场购票",when:"随到随买",lv:"easy",tip:""},
+{name:"🏛️ 木府",day:"Day 1 (5月4日)",price:"40元",how:"现场购票 / 携程",when:"随到随买",lv:"easy",tip:""},
+{name:"🏨 泸沽湖湖景房",day:"Day 4-5 (5月7-8日)",price:"400-1500元/晚",how:"携程/美团/抖音",when:"建议提前1个月",lv:"hot",tip:"湖景房紧俏！务必提前订"}
 ];
 
+let curD=1;
 function init(){
-  const tb=document.getElementById('tabs');
+  const menu=document.getElementById('menu');
   const app=document.getElementById('app');
-
-  // Booking tab first
-  const bb=document.createElement('button');
-  bb.className='tb book';bb.dataset.d='bk';
-  bb.textContent='📋 预约';
-  bb.onclick=()=>go('bk');
-  tb.appendChild(bb);
-
+  // Menu items
+  let mh='<div class="menu-hd">📅 选择日程</div>';
+  mh+=`<button class="mi" data-d="bk" onclick="go('bk');toggleMenu()"><span class="mi-num">📋</span><span class="mi-info">景点预约提醒<span class="mi-th">需提前预订的景点清单</span></span></button>`;
   D.forEach(r=>{
-    // tab
-    const b=document.createElement('button');
-    b.className='tb';b.dataset.d=r.d;
-    b.textContent=`D${r.d}`;
-    b.title=`${r.dt} ${r.th}`;
-    b.onclick=()=>go(r.d);
-    tb.appendChild(b);
-    // content
+    mh+=`<button class="mi" data-d="${r.d}" onclick="go(${r.d});toggleMenu()"><span class="mi-num">D${r.d}</span><span class="mi-info">${r.dt} ${r.wd}<span class="mi-th">${r.th}</span></span></button>`;
+  });
+  menu.innerHTML=mh;
+  // Day contents
+  D.forEach(r=>{
     const c=document.createElement('div');
     c.className='ct';c.id=`d${r.d}`;
-    let h=`<div class="badge">📍 ${r.city} · ${r.alt}</div>
-<div class="theme">${r.th}</div><div class="tl">`;
+    let h=`<div class="badge">📍 ${r.city} · ${r.alt}</div><div class="theme">${r.th}</div><div class="tl">`;
     r.ev.forEach(e=>{
-      h+=`<div class="ev"><div class="ec">`;
-      h+=`<div class="t">${e.t}</div><div class="tt">${e.tt}</div>`;
+      h+=`<div class="ev"><div class="ec"><div class="t">${e.t}</div><div class="tt">${e.tt}</div>`;
       if(e.ds)h+=`<div class="ds">${e.ds}</div>`;
       if(e.lc)e.lc.forEach(l=>{h+=`<span class="ll" onclick="openLoc('${l.n.replace(/'/g,"\\'")}',${l.la},${l.lo},event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.n}</span>`});
       if(e.tg){h+='<div class="tgs">';e.tg.forEach(t=>{if(tgM[t])h+=`<span class="tg ${tgM[t].c}">${tgM[t].t}</span>`});h+='</div>'}
       h+=`</div></div>`;
     });
     h+='</div>';
-    if(r.ns)r.ns.forEach(n=>{h+=`<div class="nt${n.startsWith('⚠️')?' w':''}">${n}</div>`});
-    if(r.rn)h+=`<div class="nt r"><strong>🌧️ 雨天备选</strong><ul style="margin:4px 0 0 14px;font-size:11px">${r.rn.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
-    h+=`<div class="bg"><span class="lb">💰 今日预算（2人）</span><span class="am">${r.b}</span></div>`;
+    if(r.ns)r.ns.forEach(n=>{h+=`<div class="nt${n.startsWith('\u26a0\ufe0f')?' w':''}">${n}</div>`});
+    if(r.rn)h+=`<div class="nt r"><strong>\ud83c\udf27\ufe0f 雨天备选</strong><ul style="margin:4px 0 0 14px;font-size:11px">${r.rn.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+    h+=`<div class="bgb"><span class="lb">\ud83d\udcb0 今日预算（2人）</span><span class="am">${r.b}</span></div>`;
     c.innerHTML=h;app.appendChild(c);
   });
   // Booking page
   const bk=document.createElement('div');
   bk.className='ct';bk.id='dBk';
-  let bh='<div class="theme">📋 预约提醒清单</div>';
-  bh+='<div class="nt" style="margin-bottom:12px">按紧急程度排序，⚠️ 为需要重点关注的项目。出发前请逐项确认！</div>';
-  bookings.forEach(b=>{
-    const cls=b.level==='warn'?'warn':b.level==='ok'?'ok':'';
+  let bh='<div class="theme">\ud83d\udccb 景点预约提醒</div>';
+  bh+='<div class="nt" style="margin-bottom:12px">\u26a0\ufe0f 只含需提前预订的景点门票和住宿，不含车票机票</div>';
+  bkData.forEach(b=>{
     bh+=`<div class="bk-item"><div class="bk-head"><span class="bk-name">${b.name}</span><span class="bk-price">${b.price}</span></div>`;
-    bh+=`<div class="bk-day">📅 ${b.day}</div>`;
-    bh+=`<div class="bk-how">💡 ${b.how}</div>`;
-    bh+=`<div class="bk-when ${cls}">⏰ ${b.when}</div>`;
+    bh+=`<div class="bk-day">\ud83d\udcc5 ${b.day}</div>`;
+    bh+=`<div class="bk-how">\ud83d\udca1 ${b.how}</div>`;
+    bh+=`<div class="bk-when ${b.lv}">\u23f0 ${b.when}</div>`;
     if(b.tip)bh+=`<div style="margin-top:6px;font-size:11px;color:var(--accent)">${b.tip}</div>`;
     bh+='</div>';
   });
-  bk.innerHTML=bh;
-  app.appendChild(bk);
-
+  bk.innerHTML=bh;app.appendChild(bk);
   auto();
 }
+
+function go(d){
+  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('act'));
+  document.querySelectorAll('.ct').forEach(c=>c.classList.remove('on'));
+  if(d==='bk'){
+    document.querySelector('.mi[data-d="bk"]').classList.add('act');
+    document.getElementById('dBk').classList.add('on');
+    document.getElementById('hdDay').textContent='景点预约提醒';
+    document.getElementById('bkBtn').classList.add('act');
+  }else{
+    curD=d;
+    const r=D.find(x=>x.d===d);
+    document.querySelector(`.mi[data-d="${d}"]`).classList.add('act');
+    document.getElementById(`d${d}`).classList.add('on');
+    document.getElementById('hdDay').textContent=`Day ${d} · ${r.dt} ${r.wd}`;
+    document.getElementById('bkBtn').classList.remove('act');
+  }
+}
+
+function nav(dir){
+  if(curD==='bk')curD=1;
+  const nd=Math.max(1,Math.min(15,curD+dir));
+  if(nd!==curD)go(nd);
+}
+
+function toggleMenu(){document.getElementById('menu').classList.toggle('on');document.getElementById('ov').classList.toggle('on')}
 
 function openLoc(name,lat,lng,e){
   e.stopPropagation();
   const ua=navigator.userAgent;
-  const isAndroid=/Android/i.test(ua);
-  const isIOS=/iPhone|iPad|iPod/i.test(ua);
-  if(isAndroid){
-    const appUrl=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
-    const webUrl=`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`;
-    window.location.href=appUrl;
-    setTimeout(()=>{window.open(webUrl,'_blank')},2000);
-  }else if(isIOS){
-    const appUrl=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0`;
-    const webUrl=`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`;
-    window.location.href=appUrl;
-    setTimeout(()=>{window.open(webUrl,'_blank')},2000);
+  const isA=/Android/i.test(ua),isI=/iPhone|iPad|iPod/i.test(ua);
+  if(isA){
+    window.location.href=`intent://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end`;
+    setTimeout(()=>{window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`,'_blank')},2000);
+  }else if(isI){
+    window.location.href=`iosamap://viewMap?sourceApplication=yntrip&poiname=${encodeURIComponent(name)}&lat=${lat}&lon=${lng}&dev=0`;
+    setTimeout(()=>{window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}&callnative=1`,'_blank')},2000);
   }else{
     window.open(`https://uri.amap.com/marker?position=${lng},${lat}&name=${encodeURIComponent(name)}`,'_blank');
   }
 }
 
-function go(d){
-  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('act'));
-  document.querySelectorAll('.ct').forEach(c=>c.classList.remove('on'));
-  if(d==='bk'){
-    document.querySelector('.tb[data-d="bk"]').classList.add('act');
-    document.getElementById('dBk').classList.add('on');
-  }else{
-    document.querySelector(`.tb[data-d="${d}"]`).classList.add('act');
-    document.getElementById(`d${d}`).classList.add('on');
-    document.querySelector(`.tb[data-d="${d}"]`).scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
-  }
-}
-
 function auto(){
-  const now=new Date();
-  const s=new Date(2026,4,4),e=new Date(2026,4,18);
+  const now=new Date();const s=new Date(2026,4,4);
   let d=1;
-  if(now>=s&&now<=e){d=Math.min(Math.floor((now-s)/864e5)+1,15)}
+  if(now>=s&&now<=new Date(2026,4,18))d=Math.min(Math.floor((now-s)/864e5)+1,15);
   go(d);
 }
+
+// Swipe support
+let sx=0;
+document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-sx;
+  if(Math.abs(dx)>80){
+    // Only swipe if not in menu and not swiping on a link
+    if(document.getElementById('menu').classList.contains('on'))return;
+    if(e.target.closest('.ll'))return;
+    if(dx>0&&curD>1)nav(-1);
+    else if(dx<0&&curD<15)nav(1);
+  }
+},{passive:true});
 
 init();
 </script>
