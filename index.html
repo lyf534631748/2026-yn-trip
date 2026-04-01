@@ -471,15 +471,26 @@ function openLoc(name,lat,lng,e){
   e.stopPropagation();
   const ua=navigator.userAgent;
   const isA=/Android/i.test(ua),isI=/iPhone|iPad|iPod/i.test(ua);
+  // 用高德搜索模式，显示完整POI信息而非仅坐标标记
+  const searchUrl='https://uri.amap.com/search?keyword='+encodeURIComponent(name)+'&center='+lng+','+lat+'&callnative=1';
   if(isA){
-    window.location.href='intent://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
-    setTimeout(()=>{window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1','_blank')},2000);
+    // Android: 先尝试唤起高德APP搜索
+    window.location.href='intent://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
   }else if(isI){
-    window.location.href='iosamap://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
-    setTimeout(()=>{window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1','_blank')},2000);
+    // iOS: 先尝试唤起高德APP搜索
+    window.location.href='iosamap://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
   }else{
-    window.open('https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name),'_blank');
+    // 桌面端：直接打开高德网页搜索
+    window.open(searchUrl.replace('&callnative=1',''),'_blank');
+    return;
   }
+  // 仅在APP唤起失败时才打开网页（延迟3秒，不主动跳转）
+  var fallbackTimer=setTimeout(function(){
+    window.open(searchUrl,'_blank');
+  },3000);
+  // 如果页面重新获得焦点（说明APP唤起成功），取消网页跳转
+  window.addEventListener('focus',function(){clearTimeout(fallbackTimer)},{once:true});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)clearTimeout(fallbackTimer)},{once:true});
 }
 
 function auto(){
