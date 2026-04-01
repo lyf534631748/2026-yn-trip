@@ -469,8 +469,8 @@ function toggleMenu(){document.getElementById('menu').classList.toggle('on');doc
 
 function openLoc(name,lat,lng,e){
   e.stopPropagation();
-  // 直接打开高德搜索页，uri.amap.com 自带「打开APP」按钮
-  window.open('https://uri.amap.com/search?keyword='+encodeURIComponent(name)+'&center='+lng+','+lat,'_blank');
+  // 用高德marker接口+callnative，自动唤起APP
+  window.location.href='https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1';
 }
 
 function auto(){
