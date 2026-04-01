@@ -469,8 +469,24 @@ function toggleMenu(){document.getElementById('menu').classList.toggle('on');doc
 
 function openLoc(name,lat,lng,e){
   e.stopPropagation();
-  // 用高德marker接口+callnative，自动唤起APP
-  window.location.href='https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1';
+  var ua=navigator.userAgent;
+  var isI=/iPhone|iPad|iPod/i.test(ua);
+  var opened=false;
+  var t;
+  function fallback(){
+    if(!opened){window.location.href='https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1';}
+  }
+  if(isI){
+    // iOS: 用search模式显示完整POI
+    window.location.href='iosamap://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
+  }else{
+    // Android: 用search模式
+    window.location.href='intent://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
+  }
+  // 如果APP唤起成功，页面会切到后台，不会触发fallback
+  t=setTimeout(fallback,1500);
+  document.addEventListener('visibilitychange',function(){if(document.hidden){opened=true;clearTimeout(t);}},{once:true});
+  window.addEventListener('pagehide',function(){opened=true;clearTimeout(t);},{once:true});
 }
 
 function auto(){
