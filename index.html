@@ -477,11 +477,9 @@ function openLoc(name,lat,lng,e){
     if(!opened){window.location.href='https://uri.amap.com/marker?position='+lng+','+lat+'&name='+encodeURIComponent(name)+'&callnative=1';}
   }
   if(isI){
-    // iOS: 用search模式显示完整POI
-    window.location.href='iosamap://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
+    window.location.href='iosamap://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0';
   }else{
-    // Android: 用search模式
-    window.location.href='intent://search?sourceApplication=yntrip&keywords='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
+    window.location.href='intent://viewMap?sourceApplication=yntrip&poiname='+encodeURIComponent(name)+'&lat='+lat+'&lon='+lng+'&dev=0#Intent;scheme=androidamap;package=com.autonavi.minimap;end';
   }
   // 如果APP唤起成功，页面会切到后台，不会触发fallback
   t=setTimeout(fallback,1500);
