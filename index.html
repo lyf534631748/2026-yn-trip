@@ -51,6 +51,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 .tg-k{background:rgba(56,189,248,.1);color:#38bdf8}
 .tg-h{background:rgba(52,211,153,.1);color:#34d399}
 .tg-d{background:rgba(168,85,247,.1);color:#a855f7}
+.food-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:none;align-items:center;justify-content:center;padding:16px}
+.food-modal.on{display:flex}
+.food-modal-content{background:var(--card);border-radius:12px;border:1px solid var(--border);max-width:400px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.food-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border)}
+.food-modal-title{font-size:16px;font-weight:700;color:var(--accent)}
+.food-modal-close{background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer;padding:4px 8px;line-height:1;margin-left:8px}
+.food-modal-close:hover{color:var(--text)}
+.food-modal-body{padding:12px}
+.food-option{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;transition:all .15s}
+.food-option:hover{background:rgba(255,255,255,.06)}
+.food-option.rank-1{border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.08)}
+.food-option-rank{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:700;margin-right:8px}
+.food-option.rank-1 .food-option-rank{background:#34d399;color:#0a0a0b}
+.food-option.rank-2 .food-option-rank{background:rgba(255,107,53,.3);color:var(--accent)}
+.food-option.rank-3 .food-option-rank{background:rgba(136,136,160,.3);color:var(--text2)}
+.food-option-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.food-option-reason{font-size:12px;color:var(--text2);line-height:1.4}
+.food-event-title{cursor:pointer;position:relative;padding-right:16px}
+.food-event-title:hover{color:var(--accent)}
+.food-event-title::after{content:'🍽️';position:absolute;right:0;top:0;font-size:12px;opacity:.6}
 .nt{background:rgba(251,191,36,.06);border-left:2px solid var(--warn);border-radius:0 8px 8px 0;padding:10px 12px;margin-top:8px;font-size:12px;color:var(--text2);line-height:1.5}
 .nt.w{background:rgba(239,68,68,.06);border-left-color:#ef4444}
 .nt.r{background:rgba(129,140,248,.06);border-left-color:var(--rain)}
@@ -104,6 +124,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","M
 </div>
 <div class="ov" id="ov" onclick="toggleMenu()"></div>
 <div class="menu" id="menu"></div>
+<div class="food-modal" id="foodModal">
+  <div class="food-modal-content">
+    <div class="food-modal-header">
+      <span class="food-modal-title" id="foodModalTitle">美食推荐</span>
+      <button class="food-modal-close" onclick="closeFoodModal()">&times;</button>
+    </div>
+    <div class="food-modal-body" id="foodModalBody"></div>
+  </div>
+</div>
 <div id="app"></div>
 <div class="bnav">
   <button class="bnb" onclick="nav(-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>上一天</button>
@@ -118,7 +147,9 @@ const D=[
 {t:"10:10-12:35",tt:"✈️ MF5712 厦门航空 武汉→丽江",ds:"直飞约2.5h",lc:[{n:"丽江三义机场",la:26.5583,lo:100.2658,poi:"B037800926"}]},
 {t:"12:35-13:15",tt:"🚕 打车前往古城",ds:"约40分钟，约50元",lc:[{n:"丽江古城",la:26.8721,lo:100.2256,poi:"B0378008PR"}]},
 {t:"13:15-13:45",tt:"🏨 办理入住",ds:"如家精选酒店（丽江古城南门店），休息适应海拔",lc:[{n:"如家精选酒店(古城南门店)",la:26.865,lo:100.230,poi:"B0FFKYAJY8"}],tg:["h"]},
-{t:"13:45-14:30",tt:"🍜 午餐",ds:"阿婆情腊排骨火锅·丽江必吃 / 阿妈腊排骨(南门老店)",tg:["f"],lc:[{n:"阿婆情腊排骨火锅(旗舰店)",la:26.874,lo:100.237,poi:"B0G0YMJVKI"}]},
+{t:"13:45-14:30",tt:"🍜 午餐",ds:"阿婆情腊排骨火锅·丽江必吃 / 阿妈腊排骨(南门老店)",tg:["f"],lc:[{n:"阿婆情腊排骨火锅(旗舰店)",la:26.874,lo:100.237,poi:"B0G0YMJVKI"}],foodOptions:[{name:"阿婆情腊排骨火锅(旗舰店)",reason:"20年老店·点评5星·丽江必吃TOP1",rank:1},{name:"阿妈腊排骨(南门老店)",reason:"南门老店·离酒店步行3分钟",rank:2},{name:"滇厨·小锅巴纳西餐厅",reason:"纳西烤鱼·鸡豆凉粉·地道纳西菜",rank:3}]},
+{t:"14:30-17:00",tt:"🚶 古城漫步",ds:"大水车 → 四方街 → 七一街 → 木府(40元) → 万古楼(35元)",lc:[{n:"大水车",la:26.8727,lo:100.227,poi:"B0FFF9GOOV"},{n:"木府",la:26.8686,lo:100.226,poi:"B03780I3B7"},{n:"万古楼",la:26.8683,lo:100.2234,poi:"B037815BZ1"}],tg:["k"]},
+{t:"18:00-20:00",tt:"🍜 晚餐",ds:"阿妈腊排骨(南门老店)·离酒店近 / 阿婆情腊排骨火锅(旗舰店)",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}],foodOptions:[{name:"阿妈腊排骨(南门老店)",reason:"南门老店·离酒店近·腊排骨正宗",rank:1},{name:"云雪丽·野生菌火锅",reason:"野生菌火锅·云南特色",rank:2},{name:"有一锅·腊排骨火锅",reason:"腊排骨·黑山羊·本地人气",rank:3}]}
 {t:"14:30-17:00",tt:"🚶 古城漫步",ds:"大水车 → 四方街 → 七一街 → 木府(40元) → 万古楼(35元)",lc:[{n:"大水车",la:26.8727,lo:100.227,poi:"B0FFF9GOOV"},{n:"木府",la:26.8686,lo:100.226,poi:"B03780I3B7"},{n:"万古楼",la:26.8683,lo:100.2234,poi:"B037815BZ1"}],tg:["k"]},
 {t:"18:00-20:00",tt:"🍜 晚餐",ds:"阿妈腊排骨(南门老店)·离酒店近 / 阿婆情腊排骨火锅(旗舰店)",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}]},
 {t:"20:00-22:00",tt:"🌙 古城夜游",ds:"酒吧街听民谣 · 一米阳光 / 火塘酒吧",lc:[{n:"丽江古城酒吧街",la:26.8705,lo:100.2255,poi:"B037814BC0"}]}
@@ -126,10 +157,10 @@ const D=[
 {d:2,dt:"4.20",wd:"周一",th:"束河 + 白沙 + 玉湖村",city:"丽江",alt:"2400m",ev:[
 {t:"09:00-09:30",tt:"🚗 前往束河古镇",ds:"打车约15元",lc:[{n:"束河古镇",la:26.9107,lo:100.2129,poi:"B03780HUIN"}]},
 {t:"09:30-12:00",tt:"🏘️ 束河古镇",ds:"九鼎龙潭 · 青龙桥 · 四方街 · 比大研更安静",lc:[{n:"九鼎龙潭",la:26.9135,lo:100.2098,poi:"B0FFHBRWDZ"},{n:"束河四方街",la:26.9105,lo:100.2125,poi:"B0LUBSAE1Y"}]},
-{t:"12:00-13:00",tt:"🍜 午餐",ds:"滇西王子·云南菜地标 / 阿婆情腊排骨火锅",tg:["f"],lc:[{n:"滇西王子(木府白龙广场店)",la:26.867,lo:100.233,poi:"B0FFG865VX"}]},
+{t:"12:00-13:00",tt:"🍜 午餐",ds:"滇西王子·云南菜地标 / 阿婆情腊排骨火锅",tg:["f"],lc:[{n:"滇西王子(木府白龙广场店)",la:26.867,lo:100.233,poi:"B0FFG865VX"}],foodOptions:[{name:"滇西王子(木府白龙广场店)",reason:"云南菜地标·本地人认可",rank:1},{name:"小锅饭",reason:"云南家常菜·性价比高",rank:2},{name:"阿婆情腊排骨火锅(旗舰店)",reason:"20年老店·丽江必吃TOP1",rank:3}]}
 {t:"14:00-16:30",tt:"🏘️ 白沙古镇",ds:"白沙壁画(30元) · 纳西刺绣体验",lc:[{n:"白沙古镇",la:26.933,lo:100.1963,poi:"B0378157X4"},{n:"白沙壁画",la:26.9325,lo:100.1955,poi:"B0FFFEJE6E"}],tg:["k"]},
 {t:"16:30-18:30",tt:"🏡 玉湖村 + 日落",ds:"石头房村落 · 玉龙雪山倒影拍摄点",lc:[{n:"玉湖村",la:26.952,lo:100.188,poi:"B0G2BY71AD"}]},
-{t:"19:00-20:00",tt:"🍜 晚餐",ds:"阿婆情腊排骨火锅 / 滇西王子(木府白龙广场店)",tg:["f"],lc:[{n:"阿婆情腊排骨火锅(旗舰店)",la:26.874,lo:100.237,poi:"B0G0YMJVKI"}]}
+{t:"19:00-20:00",tt:"🍜 晚餐",ds:"阿婆情腊排骨火锅 / 滇西王子(木府白龙广场店)",tg:["f"],lc:[{n:"阿婆情腊排骨火锅(旗舰店)",la:26.874,lo:100.237,poi:"B0G0YMJVKI"}],foodOptions:[{name:"阿婆情腊排骨火锅(旗舰店)",reason:"20年老店·点评5星",rank:1},{name:"滇西王子(木府白龙广场店)",reason:"云南菜地标",rank:2},{name:"阿妈腊排骨(南门老店)",reason:"南门老店·离古城近",rank:3}]}
 ],b:"待补充",ns:["🏨 如家精选（古城南门店）· 高级大床房 · ¥489/3晚","💡 今晚准备明天雪山：服红景天、检查氧气瓶、打包干粮"]},
 {d:3,dt:"4.21",wd:"周二",th:"玉龙雪山一日游",city:"丽江",alt:"4680m",ev:[
 {t:"06:30-07:00",tt:"⏰ 早起准备",ds:"打包早餐，出发前1小时服红景天"},
@@ -137,14 +168,16 @@ const D=[
 {t:"09:00-10:30",tt:"🏔️ 大索道登顶冰川公园",ds:"海拔4680米！缓慢行走吸氧，不适立即下撤",lc:[{n:"冰川公园",la:27.107,lo:100.173,poi:"B0HK9ZY9WF"}],tg:["k"]},
 {t:"11:30-14:00",tt:"💎 蓝月谷",ds:"玉液湖 → 镜潭湖 → 蓝月湖 → 听涛湖",lc:[{n:"蓝月谷",la:27.092,lo:100.171,poi:"B0378157WA"}]},
 {t:"15:00-16:00",tt:"⬇️ 返回古城"},
-{t:"18:00-20:00",tt:"🍜 晚餐 + 足浴放松",ds:"阿妈腊排骨(南门老店) / 滇西王子",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}]}
+{t:"18:00-20:00",tt:"🍜 晚餐 + 足浴放松",ds:"阿妈腊排骨(南门老店) / 滇西王子",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}],foodOptions:[{name:"阿妈腊排骨(南门老店)",reason:"离酒店近·腊排骨正宗",rank:1},{name:"有一锅·腊排骨火锅",reason:"腊排骨·黑山羊·雪山后滋补",rank:2},{name:"滇西王子(木府白龙广场店)",reason:"云南菜地标",rank:3}]}
 ],b:"待补充",ns:["⚠️ 穿羽绒服/冲锋衣（景区租50元），带2-3瓶氧气","🎫 大索道180元/人，提前7天（4月14日 20:00）抢票"],rn:["白沙古镇+刺绣体验","丽江千古情(280元)","黑龙潭公园"]},
 {d:4,dt:"4.22",wd:"周三",th:"丽江 → 泸沽湖",city:"泸沽湖",alt:"2690m",ev:[
 {t:"07:00-08:00",tt:"🏨 退房 + 取车",ds:"一嗨租车（丽江古城南门店）第一段租车开始",tg:["d"]},
 {t:"08:00-12:30",tt:"🚗 丽江 → 泸沽湖",ds:"200公里约4小时，全程盘山路",lc:[{n:"泸沽湖",la:27.7,lo:100.78,poi:"B03780HYGS"}],tg:["d"]},
-{t:"12:30-14:00",tt:"🏨 入住 + 午餐",ds:"花悦海Lovelife·设计师网红湖景美宿 / 老树餐厅·环湖路上湖景",lc:[{n:"花悦海Lovelife·设计师网红湖景美宿",la:27.726,lo:100.857,poi:"B0G2AD6AI4"},{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],tg:["h","f"]},
+{t:"12:30-14:00",tt:"🏨 入住 + 午餐",ds:"花悦海Lovelife·设计师网红湖景美宿 / 老树餐厅·环湖路上湖景",lc:[{n:"花悦海Lovelife·设计师网红湖景美宿",la:27.726,lo:100.857,poi:"B0G2AD6AI4"},{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],tg:["h","f"],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅·摩梭菜",rank:1},{name:"女儿国餐厅",reason:"摩梭烤鱼·猪膘肉·特色",rank:2},{name:"扎西家藏餐吧",reason:"牦牛肉·酥油茶·藏族风味",rank:3}]},
+{t:"14:30-17:30",tt:"🚗 半环湖",ds:"里格半岛 → 尼赛村 → 小洛水村 → 草海 → 走婚桥",lc:[{n:"里格半岛",la:27.714,lo:100.768,poi:"B037814E2J"},{n:"走婚桥",la:27.685,lo:100.765,poi:"B0FFG6R0TH"},{n:"草海",la:27.68,lo:100.77,poi:"B0FFFF7S5Q"}]},
 {t:"14:30-17:30",tt:"🚗 半环湖",ds:"里格半岛 → 尼赛村 → 小洛水村 → 草海 → 走婚桥",lc:[{n:"里格半岛",la:27.714,lo:100.768,poi:"B037814E2J"},{n:"走婚桥",la:27.685,lo:100.765,poi:"B0FFG6R0TH"},{n:"草海",la:27.68,lo:100.77,poi:"B0FFFF7S5Q"}]},
 {t:"17:30-18:00",tt:"🌅 草海日落",ds:"最佳日落观景点"},
+{t:"19:30-21:00",tt:"🍜 晚餐",ds:"老树餐厅·环湖路上·湖景 / 朋来聚",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅",rank:1},{name:"归田园居蒸汽石锅鱼",reason:"携程必吃榜·石锅鱼特色",rank:2},{name:"朋来聚",reason:"摩梭风味·当地人气",rank:3}]},
 {t:"19:30-21:00",tt:"🔥 篝火晚会",ds:"可选，约30元"},
 {t:"21:00-",tt:"⭐ 看星空",ds:"几乎无光污染！"}
 ],b:"待补充",ns:["⚠️ 盘山路弯道多，5月可能遇阵雨路面湿滑","🏨 花悦海Lovelife·设计师网红湖景美宿 · 悦居湖景塌塌米大床房 · ¥444.27/3晚"]},
@@ -152,54 +185,55 @@ const D=[
 {t:"06:00-07:00",tt:"🌅 里格半岛日出",ds:"提前15分钟到观景台占位！",lc:[{n:"里格半岛观景台",la:27.7155,lo:100.767,poi:"B0FFFS1YJE"}]},
 {t:"08:00-10:00",tt:"🛶 猪槽船游湖",ds:"50-100元/人，1-1.5小时"},
 {t:"10:00-12:00",tt:"📸 北线环湖",ds:"女神湾、王妃岛",lc:[{n:"女神湾",la:27.72,lo:100.755,poi:"B0FFHBOK9M"},{n:"王妃岛",la:27.705,lo:100.785,poi:"B0FFH6KSXI"}]},
-{t:"12:00-13:00",tt:"🍜 午餐",ds:"老树餐厅·环湖路上湖景 / 里格岛农家菜",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}]},
+{t:"12:00-13:00",tt:"🍜 午餐",ds:"老树餐厅·环湖路上湖景 / 里格岛农家菜",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅",rank:1},{name:"里格岛农家菜",reason:"湖鱼·野菜·原生态",rank:2},{name:"摩梭人餐厅",reason:"摩梭特色菜",rank:3}]}
 {t:"14:00-17:00",tt:"🚶 走婚桥 + 草海漫步"},
 {t:"18:00-",tt:"⭐ 星空",ds:"几乎无光污染！好好享受"}
 ],b:"待补充",ns:["🏨 花悦海Lovelife·设计师网红湖景美宿 · ¥444.27/3晚","💡 摩梭家访可选（约80元/人）","💡 明天还有一天，不用赶路"]},
 {d:6,dt:"4.24",wd:"周五",th:"泸沽湖第二天·慢享",city:"泸沽湖",alt:"2690m",ev:[
 {t:"07:00-08:00",tt:"🌅 自选：日出 or 睡到自然醒"},
-{t:"08:30-09:30",tt:"🍜 湖边早餐",ds:"慢慢吃，不赶路",tg:["f"]},
+{t:"08:30-09:30",tt:"🍜 湖边早餐",ds:"慢慢吃，不赶路",tg:["f"],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅",rank:1},{name:"达祖村摩梭菜",reason:"四川侧·地道摩梭家庭菜",rank:2},{name:"归田园居蒸汽石锅鱼",reason:"携程必吃榜·石锅鱼",rank:3}]},
 {t:"10:00-12:00",tt:"🚗 四川侧环湖",ds:"达祖村 → 泸源崖 → 情人滩 · 游客稀少",lc:[{n:"达祖村",la:27.73,lo:100.74},{n:"情人滩",la:27.71,lo:100.75}],tg:["d"]},
-{t:"12:00-13:00",tt:"🍜 午餐",ds:"老树餐厅·环湖路上湖景 / 达祖村摩梭菜",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}]},
+{t:"10:00-12:00",tt:"🚗 四川侧环湖",ds:"达祖村 → 泸源崖 → 情人滩 · 游客稀少",lc:[{n:"达祖村",la:27.73,lo:100.74},{n:"情人滩",la:27.71,lo:100.75}],tg:["d"]},
+{t:"12:00-13:00",tt:"🍜 午餐",ds:"老树餐厅·环湖路上湖景 / 达祖村摩梭菜",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅",rank:1},{name:"达祖村摩梭菜",reason:"四川侧·地道摩梭家庭菜",rank:2},{name:"归田园居蒸汽石锅鱼",reason:"携程必吃榜·石锅鱼",rank:3}]}
 {t:"14:00-16:00",tt:"🛶 猪槽船",ds:"深入湖心·亲水性更高·50-100元/人"},
 {t:"16:30-18:00",tt:"☕ 湖景咖啡馆发呆",ds:"泸沽湖最美的午后"},
 {t:"18:00-19:00",tt:"🌅 湖边日落",ds:"最后一个泸沽湖日落"},
-{t:"19:00-20:00",tt:"🍜 晚餐",ds:"老树餐厅·环湖路上湖景",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}]},
+{t:"19:00-20:00",tt:"🍜 晚餐",ds:"老树餐厅·环湖路上湖景",tg:["f"],lc:[{n:"老树餐厅",la:27.660,lo:100.792,poi:"B034200D3E"}],foodOptions:[{name:"老树餐厅",reason:"环湖路上·湖景餐厅",rank:1},{name:"女儿国餐厅",reason:"摩梭烤鱼·特色",rank:2},{name:"归田园居蒸汽石锅鱼",reason:"携程必吃榜·石锅鱼",rank:3}]},
 {t:"20:30-",tt:"⭐ 最后一个星空夜",ds:"明天要赶路，别太晚"}
 ],b:"待补充",ns:["🏨 花悦海Lovelife·设计师网红湖景美宿 · ¥444.27/3晚","💡 第二天主打慢节奏，不用赶景点","💡 四川侧人更少，风景原始"]},
 {d:7,dt:"4.25",wd:"周六",th:"泸沽湖 → 香格里拉",city:"香格里拉",alt:"3280m",ev:[
 {t:"07:00-08:00",tt:"🏨 退房"},
 {t:"07:00-11:30",tt:"🚗 泸沽湖 → 丽江",ds:"190公里约3.3小时，建议07:00出发留足余量",tg:["d"]},
 {t:"11:30-12:30",tt:"🚗 还车",ds:"一嗨租车（丽江古城南门店）第一段租车结束，预留30-40分钟办理手续",tg:["d"]},
-{t:"12:30-13:30",tt:"🍜 丽江午餐",ds:"阿妈腊排骨(南门老店)·离酒店近 / 滇西王子",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}]},
-{t:"13:50-15:00",tt:"🚄 高铁 → 香格里拉",ds:"C87次 二等座70元/人",lc:[{n:"香格里拉站",la:28.008,lo:99.71,poi:"B0FFMCMSAX"}]},
+{t:"12:30-13:30",tt:"🍜 丽江午餐",ds:"阿妈腊排骨(南门老店)·离酒店近 / 滇西王子",tg:["f"],lc:[{n:"阿妈腊排骨(南门老店)",la:26.876,lo:100.226,poi:"B037815A6D"}],foodOptions:[{name:"阿妈腊排骨(南门老店)",reason:"南门老店·离酒店近",rank:1},{name:"滇西王子(木府白龙广场店)",reason:"云南菜地标",rank:2},{name:"阿婆情腊排骨火锅(旗舰店)",reason:"20年老店·丽江必吃TOP1",rank:3}]},
+{t:"13:50-15:00",tt:"🚄 高铁 → 香格里拉",ds:"C87次 二等座70元/人",lc:[{n:"香格里拉站",la:28.008,lo:99.71,poi:"B0FFMCMSAX"}]}},
 {t:"15:30-17:30",tt:"🏨 入住休息",ds:"云镜·智能弥散供氧静居",lc:[{n:"云镜·智能弥散供氧静居",la:27.814,lo:99.707,poi:"B0L2SC6G9S"}],tg:["h"]},
-{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 阿珂顿巴餐厅",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}]},
+{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 阿珂顿巴餐厅",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}],foodOptions:[{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:1},{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:2},{name:"宏宏无烟石板烧烤",reason:"无烟烧烤·特色",rank:3}]}},
 {t:"20:00-21:00",tt:"🌙 古城漫步",ds:"世界最大转经筒",lc:[{n:"龟山公园大转经筒",la:28.0035,lo:99.7045,poi:"B0FFH6KSF3"}]}
 ],b:"待补充",ns:["🏨 云镜·智能弥散供氧静居（独克宗古城四方） · 素苕Plain大床房 · ¥755.08/4晚","⚠️ 海拔从2400跳到3280m，可能头痛气短","⚠️ 前1-2天避免长时间热水澡，可温水快速淋浴（<10分钟），禁止饮酒"]},
 {d:8,dt:"4.26",wd:"周日",th:"松赞林寺 + 纳帕海",city:"香格里拉",alt:"3280m",ev:[
 {t:"09:00-11:30",tt:"🏛️ 松赞林寺",ds:"「小布达拉宫」门票115元（含观光车）打车约15分钟",lc:[{n:"噶丹·松赞林寺",la:27.927,lo:99.74,poi:"B0377002VG"}],tg:["k"]},
 {t:"11:30-12:00",tt:"📸 对面山坡拍全景",ds:"最佳全景机位"},
-{t:"12:00-13:30",tt:"🍜 午餐",ds:"阿珂顿巴餐厅·藏餐特色 / 老字号特色藏餐",tg:["f"],lc:[{n:"阿珂顿巴餐厅",la:27.814,lo:99.706,poi:"B0FFLCBPJS"}]},
+{t:"12:00-13:30",tt:"🍜 午餐",ds:"阿珂顿巴餐厅·藏餐特色 / 老字号特色藏餐",tg:["f"],lc:[{n:"阿珂顿巴餐厅",la:27.814,lo:99.706,poi:"B0FFLCBPJS"}],foodOptions:[{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:1},{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:2},{name:"在水一方特色火锅",reason:"牦牛肉火锅",rank:3}]}},
 {t:"14:00-17:00",tt:"🐎 纳帕海草原",ds:"打车约15分钟 · 环湖约40公里 · 骑马约100元/小时",lc:[{n:"纳帕海",la:27.96,lo:99.65,poi:"B0377007T0"},{n:"依拉草原",la:27.955,lo:99.645,poi:"B0FFH6XCFG"}]},
-{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 阿珂顿巴餐厅",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}]}
+{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 阿珂顿巴餐厅",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}],foodOptions:[{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:1},{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:2},{name:"牛牛藏餐吧",reason:"藏餐·当地人气",rank:3}]}
 ],b:"待补充",ns:["🏨 云镜·智能弥散供氧静居 · ¥755.08/4晚","💡 纳帕海打车往返约60-80元","💡 今晚准备明天去巴拉格宗"]},
 {d:9,dt:"4.27",wd:"周一",th:"巴拉格宗一日游",city:"香格里拉",alt:"2000-3280m",ev:[
 {t:"08:00-08:30",tt:"🚗 取车",ds:"一嗨租车（独克宗古城店）第三段租车开始",tg:["d"]},
 {t:"08:30-09:30",tt:"🚗 自驾前往巴拉格宗",ds:"50公里约1小时",tg:["d"]},
 {t:"09:30-12:00",tt:"🏔️ 巴拉格宗（上午）",ds:"大峡谷(深2000米) · 格宗神山(5500m)",lc:[{n:"巴拉格宗景区",la:28.2,lo:99.55,poi:"B03770LV8B"}],tg:["k"]},
-{t:"12:00-13:00",tt:"🍜 景区简餐",ds:"巴拉格宗景区内简餐 / 老字号特色藏餐(回城后)",tg:["f"]},
+{t:"12:00-13:00",tt:"🍜 景区简餐",ds:"巴拉格宗景区内简餐 / 老字号特色藏餐(回城后)",tg:["f"],foodOptions:[{name:"阿珂顿巴餐厅",reason:"藏餐特色·回城后吃",rank:1},{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:2},{name:"静静的嘛呢石藏餐",reason:"TA高分·藏餐正宗",rank:3}]}},
 {t:"13:00-16:00",tt:"🏘️ 巴拉格宗（下午）",ds:"巴拉村 · 通天峡(一线天)"},
 {t:"16:00-17:00",tt:"🚗 自驾返回香格里拉",tg:["d"]},
-{t:"18:00-20:00",tt:"🍜 晚餐",ds:"阿珂顿巴餐厅·藏餐特色 / 老字号特色藏餐",tg:["f"],lc:[{n:"阿珂顿巴餐厅",la:27.814,lo:99.706,poi:"B0FFLCBPJS"}]}
+{t:"18:00-20:00",tt:"🍜 晚餐",ds:"阿珂顿巴餐厅·藏餐特色 / 老字号特色藏餐",tg:["f"],lc:[{n:"阿珂顿巴餐厅",la:27.814,lo:99.706,poi:"B0FFLCBPJS"}],foodOptions:[{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:1},{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:2},{name:"静静的嘛呢石藏餐",reason:"TA高分·藏餐正宗",rank:3}]}
 ],b:"待补充",ns:["🏨 云镜·智能弥散供氧静居 · ¥755.08/4晚","🎫 门票约170元"（含观光车）","💡 海拔比市区低，身体更舒适"]},
 {d:10,dt:"4.28",wd:"周二",th:"普达措国家公园",city:"香格里拉",alt:"3500-4100m",ev:[
 {t:"08:30-09:00",tt:"🚗 自驾前往普达措",ds:"25公里约30分钟",tg:["d"]},
 {t:"09:00-12:00",tt:"🌲 属都湖",ds:"3.3公里木栈道 步行约2小时",lc:[{n:"普达措国家公园",la:27.933,lo:99.96,poi:"B0377006XM"},{n:"属都湖",la:27.93,lo:99.955,poi:"B0FFHJ45O4"}],tg:["k"]},
-{t:"12:00-13:00",tt:"🍜 午餐",ds:"景区简餐或自带干粮",tg:["f"]},
+{t:"12:00-13:00",tt:"🍜 午餐",ds:"景区简餐或自带干粮",tg:["f"],foodOptions:[{name:"景区简餐",reason:"普达措景区内简餐",rank:1},{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:2},{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:3}]}},
 {t:"14:00-16:30",tt:"💎 碧塔海",ds:"海拔3538m · 可乘船(50元) · 5月杜鹃花盛开",lc:[{n:"碧塔海",la:27.91,lo:99.98}]},
 {t:"16:30-17:30",tt:"🚗 自驾返回香格里拉",tg:["d"]},
-{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 藏民家访+晚餐(人均150-200元)",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}]}
+{t:"18:00-20:00",tt:"🍜 晚餐",ds:"老字号特色藏餐·离酒店近 / 藏民家访+晚餐(人均150-200元)",tg:["f"],lc:[{n:"老字号特色藏餐",la:27.814,lo:99.707,poi:"B0FFH6GEWO"}],foodOptions:[{name:"老字号特色藏餐",reason:"离酒店近·藏餐地道",rank:1},{name:"阿珂顿巴餐厅",reason:"藏餐特色·当地人气",rank:2},{name:"静静的嘛呢石藏餐",reason:"TA高分·藏餐正宗",rank:3}]}
 ],b:"待补充",ns:["🏨 云镜·智能弥散供氧静居 · ¥755.08/4晚","🎫 普达措门票138元（含环保车）","⚠️ 海拔3500-4100m注意高反","🎒 明天出发大理，今晚整理行李"],rn:["松赞林卡下午茶(150元/人)","古城+藏香/唐卡体验"]},
 {d:11,dt:"4.29",wd:"周三",th:"香格里拉 → 大理",city:"大理",alt:"1972m",ev:[
 {t:"08:00-10:30",tt:"🎨 唐卡体验",ds:"唐卡画院体验或藏族家访，香格里拉最后半天",tg:["k"]},
@@ -207,30 +241,33 @@ const D=[
 {t:"11:00-12:00",tt:"🚕 前往香格里拉站"},
 {t:"12:00-15:00",tt:"🚄 高铁 → 大理",ds:"C984次 二等座129元/人",lc:[{n:"大理站",la:25.59,lo:100.23,poi:"B03680030R"}]},
 {t:"15:00-15:30",tt:"🏨 入住",ds:"古道云端·婉苑美宿（大理古城店）",lc:[{n:"古道云端·婉苑美宿(古城店)",la:25.687,lo:100.159,poi:"B0MBGY33O9"}],tg:["h"]},
-{t:"15:30-16:30",tt:"🍜 午餐",ds:"翠麓野白族庭院私房菜·庭院 / 品大理·白族石板烧",tg:["f"],lc:[{n:"翠麓野白族庭院私房菜",la:25.687,lo:100.159,poi:"B0J12S1TC1"}]},
+{t:"15:30-16:30",tt:"🍜 午餐",ds:"翠麓野白族庭院私房菜·庭院 / 品大理·白族石板烧",tg:["f"],lc:[{n:"翠麓野白族庭院私房菜",la:25.687,lo:100.159,poi:"B0J12S1TC1"}],foodOptions:[{name:"翠麓野白族庭院私房菜",reason:"白族庭院·地道白族菜",rank:1},{name:"品大理·白族石板烧",reason:"白族石板烧·野生菌火塘",rank:2},{name:"段公子·白族特色菜",reason:"白族菜代表·TA 5.0",rank:3}]}},
 {t:"16:30-19:00",tt:"🚶 大理古城闲逛",ds:"人民路 · 复兴路 · 五华楼",lc:[{n:"大理古城",la:25.6065,lo:100.267,poi:"B0FFFZH0RQ"},{n:"五华楼",la:25.6045,lo:100.267,poi:"B036800DK2"}]},
-{t:"19:00-20:30",tt:"🍜 晚餐",ds:"品大理·白族石板烧 / 翠麓野白族庭院私房菜",tg:["f"],lc:[{n:"品大理·白族石板烧·野生菌火塘",la:25.697,lo:100.166,poi:"B0JKVSJM4P"}]},
+{t:"19:00-20:30",tt:"🍜 晚餐",ds:"品大理·白族石板烧 / 翠麓野白族庭院私房菜",tg:["f"],lc:[{n:"品大理·白族石板烧·野生菌火塘",la:25.697,lo:100.166,poi:"B0JKVSJM4P"}],foodOptions:[{name:"品大理·白族石板烧",reason:"白族石板烧·野生菌火塘",rank:1},{name:"翠麓野白族庭院私房菜",reason:"白族庭院·地道白族菜",rank:2},{name:"梅子井酒家",reason:"白族特色·本地人气",rank:3}]}},
 {t:"20:30-21:30",tt:"🌙 古城夜游",ds:"人民路听街头音乐"}
 ],b:"待补充",ns:["🏨 古道云端·婉苑美宿（大理古城店） · 温馨大床房 · ¥506.31/3晚","🎉 到大理海拔降至1972m，身体会轻松很多！","⚠️ C988原车次信息有误（实际15:10发车），已改为C984中午出发"]},
 {d:12,dt:"4.30",wd:"周四",th:"洱海环湖 · 喜洲 + 双廊",city:"大理",alt:"1972m",ev:[
 {t:"08:00-08:30",tt:"🚗 取车",ds:"一嗨租车（大理古城南门店）第二段租车开始",tg:["d"]},
 {t:"08:30-09:30",tt:"🚗 → 喜洲古镇",ds:"沿环海西路 约20公里30分钟",lc:[{n:"喜洲古镇",la:25.645,lo:100.205,poi:"B0FFH27SSH"}]},
 {t:"09:30-11:30",tt:"🏘️ 喜洲古镇",ds:"严家大院(20元) · 转角楼 · 喜洲粑粑必吃！",lc:[{n:"严家大院",la:25.6445,lo:100.204},{n:"喜洲转角楼",la:25.6438,lo:100.206,poi:"B0FFKIQAOJ"}],tg:["k","f"]},
-{t:"11:30-12:30",tt:"🍜 午餐",ds:"翠麓野白族庭院私房菜(回城后) / 喜洲杨记耙耙",tg:["f"]},
+{t:"11:30-12:30",tt:"🍜 午餐",ds:"翠麓野白族庭院私房菜(回城后) / 喜洲杨记耙耙",tg:["f"],foodOptions:[{name:"翠麓野白族庭院私房菜",reason:"白族庭院·地道白族菜",rank:1},{name:"喜洲杨记耙耙",reason:"喜洲粑粑·白族特色小吃",rank:2},{name:"南诏林公坊",reason:"野生菌火锅·性价比高",rank:3}]},
+{t:"12:30-13:30",tt:"📸 海舌公园",ds:"拍照打卡（有时因水位关闭）",lc:[{n:"海舌公园",la:25.657,lo:100.188,poi:"B0FFFFK7HC"}]}},
 {t:"12:30-13:30",tt:"📸 海舌公园",ds:"拍照打卡（有时因水位关闭）",lc:[{n:"海舌公园",la:25.657,lo:100.188,poi:"B0FFFFK7HC"}]},
 {t:"14:30-15:30",tt:"📸 文笔村",ds:"\"大理圣托里尼\" 公路直插洱海 拍照绝佳",lc:[{n:"文笔村",la:25.65,lo:100.22,poi:"B0L0O5IV42"}]},
 {t:"15:30-17:30",tt:"🏘️ 双廊古镇",ds:"南诏风情岛(50元) · 玉几岛 · 海街咖啡馆",lc:[{n:"双廊古镇",la:25.68,lo:100.18,poi:"B036814RT7"},{n:"南诏风情岛",la:25.678,lo:100.183,poi:"B0368000AW"}]},
 {t:"17:30-18:30",tt:"🌅 双廊日落",ds:"海街尽头最佳日落观景点"},
-{t:"18:30-20:00",tt:"🍜 双廊晚餐",ds:"云禾壹海景庄园（人均150-180元）",tg:["f"]},
+{t:"18:30-20:00",tt:"🍜 双廊晚餐",ds:"云禾壹海景庄园（人均150-180元）",tg:["f"],foodOptions:[{name:"云禾壹海景庄园",reason:"海景庄园·环境绝佳",rank:1},{name:"段公子·白族特色菜",reason:"白族菜代表·TA 5.0",rank:2},{name:"品大理·白族石板烧",reason:"白族石板烧·野生菌火塘",rank:3}]},
+{t:"20:00-21:00",tt:"🚗 返回大理古城"}},
 {t:"20:00-21:00",tt:"🚗 返回大理古城"}
 ],b:"待补充",ns:["🏨 古道云端·婉苑美宿（大理古城店） · ¥506.31/3晚","🚗 环海东路风景最美，多停几次拍照"]},
 {d:13,dt:"5.1",wd:"周五",th:"苍山 + 周城扎染",city:"大理",alt:"1972m",ev:[
 {t:"08:00-09:00",tt:"🏨 退房（行李放车上）"},
 {t:"09:00-09:30",tt:"🚕 → 苍山感通索道"},
 {t:"09:30-13:00",tt:"🏔️ 苍山深度游",ds:"感通索道往返120元 · 玉带云游路 · 俯瞰洱海",lc:[{n:"苍山感通索道",la:25.598,lo:100.235,poi:"B0368002Q3"}],tg:["k"]},
-{t:"11:30-12:30",tt:"🍜 寂照庵斋饭",ds:"中国最美尼姑庵 20元/人 多肉植物天堂",lc:[{n:"寂照庵",la:25.602,lo:100.23,poi:"B0FFFSA0F3"}],tg:["f"]},
+{t:"11:30-12:30",tt:"🍜 寂照庵斋饭",ds:"中国最美尼姑庵 20元/人 多肉植物天堂",lc:[{n:"寂照庵",la:25.602,lo:100.23,poi:"B0FFFSA0F3"}],tg:["f"],foodOptions:[{name:"寂照庵斋饭",reason:"中国最美尼姑庵·斋饭20元/人",rank:1}]}},
 {t:"13:30-16:30",tt:"🎨 周城扎染体验",ds:"中国扎染之乡 80-150元/人 成品可带走",lc:[{n:"周城",la:25.645,lo:100.15},{n:"璞真扎染",la:25.644,lo:100.148,poi:"B0J6X90HP9"}]},
-{t:"17:00-18:30",tt:"🍜 告别大理晚餐",ds:"品大理·白族石板烧 / 翠麓野白族庭院私房菜",tg:["f"],lc:[{n:"品大理·白族石板烧·野生菌火塘",la:25.697,lo:100.166,poi:"B0JKVSJM4P"}]},
+{t:"13:30-16:30",tt:"🎨 周城扎染体验",ds:"中国扎染之乡 80-150元/人 成品可带走",lc:[{n:"周城",la:25.645,lo:100.15},{n:"璞真扎染",la:25.644,lo:100.148,poi:"B0J6X90HP9"}]},
+{t:"17:00-18:30",tt:"🍜 告别大理晚餐",ds:"品大理·白族石板烧 / 翠麓野白族庭院私房菜",tg:["f"],lc:[{n:"品大理·白族石板烧·野生菌火塘",la:25.697,lo:100.166,poi:"B0JKVSJM4P"}],foodOptions:[{name:"品大理·白族石板烧",reason:"白族石板烧·野生菌火塘",rank:1},{name:"翠麓野白族庭院私房菜",reason:"白族庭院·地道白族菜",rank:2},{name:"段公子·白族特色菜",reason:"白族菜代表·TA 5.0",rank:3}]}},
 {t:"18:30-20:00",tt:"🛍️ 买伴手礼",ds:"鲜花饼 · 乳扇 · 普洱茶"}
 ],b:"待补充",ns:["🏨 古道云端·婉苑美宿（大理古城店） · ¥506.31/3晚","⚠️ 五一期间苍山可能人多，建议早出发","💡 寂照庵 = 中国最美尼姑庵，必去"]},
 {d:14,dt:"5.2",wd:"周六",th:"大理 → 昆明",city:"昆明",alt:"1891m",ev:[
@@ -239,9 +276,9 @@ const D=[
 {t:"09:00-09:30",tt:"🚕 → 大理站"},
 {t:"10:00-12:00",tt:"🚄 高铁 → 昆明",ds:"约2小时 舒适不累",lc:[{n:"昆明站",la:25.02,lo:102.72,poi:"B03670W002"}]},
 {t:"12:00-12:30",tt:"🏨 入住",ds:"如家商旅（昆明火车站北京路店）",lc:[{n:"如家商旅酒店(昆明火车站北京路店)",la:25.024,lo:102.720,poi:"B0L2FA1ZPW"}],tg:["h"]},
-{t:"12:30-13:30",tt:"🍜 午餐",ds:"蒙自传统菊花过桥米线·离酒店近 / 建新园过桥米线",tg:["f"],lc:[{n:"蒙自传统菊花过桥米线(永善路店)",la:25.023,lo:102.720,poi:"B0FFJXT9GE"}]},
+{t:"12:30-13:30",tt:"🍜 午餐",ds:"蒙自传统菊花过桥米线·离酒店近 / 建新园过桥米线",tg:["f"],lc:[{n:"蒙自传统菊花过桥米线(永善路店)",la:25.023,lo:102.720,poi:"B0FFJXT9GE"}],foodOptions:[{name:"蒙自传统菊花过桥米线",reason:"菊花过桥米线特色",rank:1},{name:"建新园过桥米线",reason:"老字号·过桥米线",rank:2},{name:"福华园",reason:"米线劲道·汤底浓郁",rank:3}]}},
 {t:"14:00-17:00",tt:"🛍️ 昆明闲逛",ds:"翠湖公园 · 南屏街 · 陆军讲武堂",lc:[{n:"翠湖公园",la:25.043,lo:102.707,poi:"B036701L3W"},{n:"陆军讲武堂",la:25.04,lo:102.706,poi:"B036709AHP"}]},
-{t:"17:30-19:00",tt:"🍜 告别云南晚餐",ds:"蒙自传统菊花过桥米线 / 汽锅鸡/菌菇火锅",tg:["f"],lc:[{n:"蒙自传统菊花过桥米线(永善路店)",la:25.023,lo:102.720,poi:"B0FFJXT9GE"}]},
+{t:"17:30-19:00",tt:"🍜 告别云南晚餐",ds:"蒙自传统菊花过桥米线 / 汽锅鸡/菌菇火锅",tg:["f"],lc:[{n:"蒙自传统菊花过桥米线(永善路店)",la:25.023,lo:102.720,poi:"B0FFJXT9GE"}],foodOptions:[{name:"蒙自传统菊花过桥米线",reason:"菊花过桥米线特色",rank:1},{name:"建新园过桥米线",reason:"老字号·过桥米线",rank:2},{name:"福华园",reason:"米线劲道·汤底浓郁",rank:3}]}
 {t:"19:00-20:00",tt:"🌙 南屏街散步",ds:"早点休息，明天早起赶飞机"}
 ],b:"待补充",ns:["🏨 如家商旅（昆明火车站北京路店） · 商务大床房 · ¥271/1晚","💡 高铁2h到昆明，轻松不累","💡 昆明最后半天简单逛逛"]},
 {d:15,dt:"5.3",wd:"周日",th:"昆明 → 武汉 · 回家",city:"昆明→武汉",alt:"1891m",ev:[
@@ -366,8 +403,10 @@ function init(){
     const c=document.createElement('div');
     c.className='ct';c.id='d'+r.d;
     let h=`<div class="badge">📍 ${r.city} · ${r.alt}</div><div class="theme">${r.th}</div><div class="tl">`;
-    r.ev.forEach(e=>{
-      h+=`<div class="ev"><div class="ec"><div class="t">${e.t}</div><div class="tt">${e.tt}</div>`;
+    r.ev.forEach((e,idx)=>{
+      const isFood=e.tg&&e.tg.includes('f');
+      const ttHtml=isFood&&e.foodOptions?`<div class="tt food-event-title" onclick="openFoodModal(${r.d},${idx},event)">${e.tt}</div>`:`<div class="tt">${e.tt}</div>`;
+      h+=`<div class="ev"><div class="ec"><div class="t">${e.t}</div>${ttHtml}`;
       if(e.ds)h+=`<div class="ds">${e.ds}</div>`;
       if(e.lc)e.lc.forEach(l=>{h+=`<span class="ll" onclick="openLoc('${l.n.replace(/'/g,"\\'")}',${l.la},${l.lo},event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.n}</span>`});
       if(e.tg){h+='<div class="tgs">';e.tg.forEach(t=>{if(tgM[t])h+=`<span class="tg ${tgM[t].c}">${tgM[t].t}</span>`});h+='</div>'}
@@ -468,7 +507,38 @@ function nav(dir){
   if(nd!==curD)go(nd);
 }
 
-function toggleMenu(){document.getElementById('menu').classList.toggle('on');document.getElementById('ov').classList.toggle('on')}
+function toggleMenu(){
+  closeFoodModal();
+  document.getElementById('menu').classList.toggle('on');
+  document.getElementById('ov').classList.toggle('on');
+}
+
+function openFoodModal(day,eventIdx,e){
+  if(e)e.stopPropagation();
+  const dayData=D.find(d=>d.d===day);
+  if(!dayData||!dayData.ev[eventIdx])return;
+  const event=dayData.ev[eventIdx];
+  if(!event.foodOptions)return;
+  const modal=document.getElementById('foodModal');
+  const modalTitle=document.getElementById('foodModalTitle');
+  const modalBody=document.getElementById('foodModalBody');
+  modalTitle.textContent=event.t+' · '+event.tt;
+  let html='';
+  event.foodOptions.forEach((opt,idx)=>{
+    html+=`<div class="food-option rank-${opt.rank}">`;
+    html+=`<div class="food-option-rank">${opt.rank}</div>`;
+    html+=`<div class="food-option-name">${opt.name}</div>`;
+    html+=`<div class="food-option-reason">${opt.reason}</div>`;
+    html+='</div>';
+  });
+  modalBody.innerHTML=html;
+  modal.classList.add('on');
+  document.getElementById('ov').classList.add('on');
+}
+function closeFoodModal(){
+  document.getElementById('foodModal').classList.remove('on');
+  document.getElementById('ov').classList.remove('on');
+}
 
 function openLoc(name,lat,lng,e){
   e.stopPropagation();
