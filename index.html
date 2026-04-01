@@ -473,7 +473,7 @@ function openLoc(name,lat,lng,e){
   var poiId=null;
   var allLocs=document.querySelectorAll('.ll');
   // 从页面的location数据中提取poi
-  var found=daysData.flatMap(function(d){return d.ev||[]}).flatMap(function(ev){return ev.lc||[]}).find(function(l){return l.n===name && l.poi;});
+  var found=D.flatMap(function(d){return d.ev||[]}).flatMap(function(ev){return ev.lc||[]}).find(function(l){return l.n===name && l.poi;});
   if(found) poiId=found.poi;
   var ua=navigator.userAgent;
   var isI=/iPhone|iPad|iPod/i.test(ua);
